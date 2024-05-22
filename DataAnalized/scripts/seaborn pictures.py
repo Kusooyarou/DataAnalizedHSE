@@ -26,7 +26,7 @@ plt.title('Топ-30 команд по количеству матчей', fonts
 plt.xticks(rotation=90, fontsize=10)
 plt.yticks(range(0, top_30_matches_count['matches_count'].max() + 1, 5))
 plt.tight_layout()
-plt.savefig('top_30_matches_per_club_barplot.png')
+plt.savefig('../../graphics/output/top_30_matches_per_club_barplot.png')
 plt.show()
 
 # группировка данных по тренерам и подсчет количества побед для каждого

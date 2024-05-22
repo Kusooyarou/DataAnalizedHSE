@@ -2,11 +2,11 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-clubs_normalized = pd.read_excel('C:/Users/Andrey/Desktop/work/data/new_normalized_data.xlsx',
+clubs_normalized = pd.read_excel('../../data/new_normalized_data.xlsx',
                                  sheet_name='clubs_normalized')
-matches_normalized = pd.read_excel('C:/Users/Andrey/Desktop/work/data/new_normalized_data.xlsx',
+matches_normalized = pd.read_excel('../../data/new_normalized_data.xlsx',
                                    sheet_name='matches_normalized')
-club_managers = pd.read_excel('C:/Users/Andrey/Desktop/work/data/new_normalized_data.xlsx',
+club_managers = pd.read_excel('../../data/new_normalized_data.xlsx',
                               sheet_name='club_managers')
 
 matches_count = matches_normalized.groupby('home_club_id').size().reset_index(name='matches_count')
