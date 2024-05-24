@@ -1,3 +1,9 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Sun May 15 20:04:57 2024
+
+@author: Бабенко А.
+"""
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -8,8 +14,11 @@ output_folder = 'outputs'
 os.makedirs(output_folder, exist_ok=True)
 
 def view_graph_1():
-    clubs_normalized = pd.read_excel("C:/Users/Andrey/Desktop/work2/DataAnalized/data/new_normalized_data.xlsx", sheet_name='clubs_normalized')
-    matches_normalized = pd.read_excel("C:/Users/Andrey/Desktop/work2/DataAnalized/data/new_normalized_data.xlsx", sheet_name='matches_normalized')
+    base_dir = os.path.abspath(os.path.dirname(__file__))
+    data_file_path = os.path.join(base_dir, "..", "data", "new_normalized_data.xlsx")
+
+    clubs_normalized = pd.read_excel(data_file_path, sheet_name='clubs_normalized')
+    matches_normalized = pd.read_excel(data_file_path, sheet_name='matches_normalized')
 
     matches_count = matches_normalized.groupby('home_club_id').size().reset_index(name='matches_count')
     matches_count = matches_count.merge(clubs_normalized[['club_id', 'club_name']], left_on='home_club_id', right_on='club_id')
@@ -29,7 +38,9 @@ def view_graph_1():
     plt.show()
 
 def view_graph_2():
-    matches_normalized = pd.read_excel("C:/Users/Andrey/Desktop/work2/DataAnalized/data/new_normalized_data.xlsx", sheet_name='matches_normalized')
+    base_dir = os.path.abspath(os.path.dirname(__file__))
+    data_file_path = os.path.join(base_dir, "..", "data", "new_normalized_data.xlsx")
+    matches_normalized = pd.read_excel(data_file_path, sheet_name='matches_normalized')
 
     coach_wins = matches_normalized.groupby('home_club_manager_name').size().reset_index(name='wins')
     top_20_coaches = coach_wins.sort_values(by='wins', ascending=False).head(20)
@@ -46,7 +57,9 @@ def view_graph_2():
     plt.show()
 
 def view_graph_3():
-    matches_normalized = pd.read_excel("C:/Users/Andrey/Desktop/work2/DataAnalized/data/new_normalized_data.xlsx", sheet_name='matches_normalized')
+    base_dir = os.path.abspath(os.path.dirname(__file__))
+    data_file_path = os.path.join(base_dir, "..", "data", "new_normalized_data.xlsx")
+    matches_normalized = pd.read_excel(data_file_path, sheet_name='matches_normalized')
 
     quant_qual_data_box = matches_normalized[['home_club_goals', 'competition_id']]
     colors = sns.color_palette('Purples', n_colors=29)[::-1]
@@ -61,7 +74,9 @@ def view_graph_3():
     plt.show()
 
 def view_graph_4():
-    matches_normalized = pd.read_excel("C:/Users/Andrey/Desktop/work2/DataAnalized/data/new_normalized_data.xlsx", sheet_name='matches_normalized')
+    base_dir = os.path.abspath(os.path.dirname(__file__))
+    data_file_path = os.path.join(base_dir, "..", "data", "new_normalized_data.xlsx")
+    matches_normalized = pd.read_excel(data_file_path, sheet_name='matches_normalized')
 
     quant_quant_qual_data = matches_normalized[['home_club_goals', 'away_club_goals', 'competition_id']]
 
@@ -76,7 +91,9 @@ def view_graph_4():
     plt.show()
 
 def view_graph_5():
-    matches_normalized = pd.read_excel("C:/Users/Andrey/Desktop/work2/DataAnalized/data/new_normalized_data.xlsx", sheet_name='matches_normalized')
+    base_dir = os.path.abspath(os.path.dirname(__file__))
+    data_file_path = os.path.join(base_dir, "..", "data", "new_normalized_data.xlsx")
+    matches_normalized = pd.read_excel(data_file_path, sheet_name='matches_normalized')
 
     plt.figure(figsize=(12, 8))
     sns.histplot(data=matches_normalized, x='season', bins=10, kde=True)
@@ -89,7 +106,9 @@ def view_graph_5():
     plt.show()
 
 def view_graph_6():
-    matches_normalized = pd.read_excel("C:/Users/Andrey/Desktop/work2/DataAnalized/data/new_normalized_data.xlsx", sheet_name='matches_normalized')
+    base_dir = os.path.abspath(os.path.dirname(__file__))
+    data_file_path = os.path.join(base_dir, "..", "data", "new_normalized_data.xlsx")
+    matches_normalized = pd.read_excel(data_file_path, sheet_name='matches_normalized')
 
     home_club_wins = matches_normalized.groupby('home_club_id')['home_club_goals'].count().reset_index(name='wins')
     home_club_wins['club_position'] = home_club_wins['wins'].rank(ascending=False, method='min')
@@ -106,11 +125,13 @@ def view_graph_6():
     plt.show()
 
 def view_graph_7():
-    clubs_normalized = pd.read_excel("C:/Users/Andrey/Desktop/work2/DataAnalized/data/new_normalized_data.xlsx",
+    base_dir = os.path.abspath(os.path.dirname(__file__))
+    data_file_path = os.path.join(base_dir, "..", "data", "new_normalized_data.xlsx")
+    clubs_normalized = pd.read_excel(data_file_path,
                                      sheet_name='clubs_normalized')
-    matches_normalized = pd.read_excel("C:/Users/Andrey/Desktop/work2/DataAnalized/data/new_normalized_data.xlsx",
+    matches_normalized = pd.read_excel(data_file_path,
                                        sheet_name='matches_normalized')
-    club_managers = pd.read_excel("C:/Users/Andrey/Desktop/work2/DataAnalized/data/new_normalized_data.xlsx",
+    club_managers = pd.read_excel(data_file_path,
                                   sheet_name='club_managers')
 
     matches_count = matches_normalized.groupby('home_club_id').size().reset_index(name='matches_count')
@@ -137,4 +158,3 @@ def view_graph_7():
     plt.tight_layout()
     plt.savefig('away_goals_vs_club_position_scatterplot.png')
     plt.show()
-

@@ -1,4 +1,11 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Sun May 15 20:04:57 2024
+
+@author: Бабенко А.
+"""
 import pandas as pd
+import os
 
 
 def clean_data(data: pd.DataFrame) -> pd.DataFrame:
@@ -161,10 +168,13 @@ def generate_text_reports(clubs_normalized: pd.DataFrame, matches_normalized: pd
 
     return reports
 
+
 def main():
-    clubs_normalized = pd.read_excel('C:/Users/Andrey/Desktop/work/data/new_normalized_data.xlsx',
+    base_dir = os.path.abspath(os.path.dirname(__file__))
+    data_file_path = os.path.join(base_dir, "..", "data", "new_normalized_data.xlsx")
+    clubs_normalized = pd.read_excel(data_file_path,
                                      sheet_name='clubs_normalized')
-    matches_normalized = pd.read_excel('C:/Users/Andrey/Desktop/work/data/new_normalized_data.xlsx',
+    matches_normalized = pd.read_excel(data_file_path,
                                        sheet_name='matches_normalized')
 
     if not clubs_normalized.empty and not matches_normalized.empty:
