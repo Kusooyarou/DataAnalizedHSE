@@ -8,7 +8,7 @@ import tkinter as tk
 from tkinter import messagebox, ttk
 import os
 import pandas as pd
-from Scripts import library  # Модуль для загрузки, сохранения и открытия файлов
+from scripts import library  # Модуль для загрузки, сохранения и открытия файлов
 import graph_reports  # Модуль для отображения графиков
 import filter  # Модуль для фильтрации данных
 import sheet_report  # Модуль для создания текстовых отчетов
