@@ -8,7 +8,7 @@ import tkinter as tk
 from tkinter import messagebox, ttk
 import os
 import pandas as pd
-from scripts import library  # Модуль для загрузки, сохранения и открытия файлов
+from library import load_data, save_data  # Модуль для загрузки, сохранения и открытия файлов
 import graph_reports  # Модуль для отображения графиков
 import filter  # Модуль для фильтрации данных
 import sheet_report  # Модуль для создания текстовых отчетов
@@ -54,9 +54,9 @@ class Application(tk.Tk):
 
         # Загрузка данных
         try:
-            self.clubs_df = library.load_data(self.data_file_path, "clubs_normalized")
-            self.matches_df = library.load_data(self.data_file_path, "matches_normalized")
-            self.managers_df = library.load_data(self.data_file_path, "club_managers")
+            self.clubs_df = load_data(self.data_file_path, "clubs_normalized")
+            self.matches_df = load_data(self.data_file_path, "matches_normalized")
+            self.managers_df = load_data(self.data_file_path, "club_managers")
         except FileNotFoundError:
             messagebox.showerror("Ошибка", "Файл данных не найден.")
             self.destroy()
@@ -187,7 +187,7 @@ class Application(tk.Tk):
 
         self.clubs_df = self.clubs_df.append(new_row, ignore_index=True)
 
-        library.save_data(self.data_file_path, clubs_normalized=self.clubs_df, matches_normalized=self.matches_df,
+        save_data(self.data_file_path, clubs_normalized=self.clubs_df, matches_normalized=self.matches_df,
                           club_managers=self.managers_df)
 
         messagebox.showinfo("Добавить клуб", "Клуб успешно добавлен.")
