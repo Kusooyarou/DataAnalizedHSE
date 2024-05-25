@@ -2,17 +2,19 @@
 """
 Created on Sun May 15 20:04:57 2024
 
-@author: Бабенко А.
+@author: Бабенко А, Осинцев К
 """
 import tkinter as tk
 from tkinter import messagebox, ttk
 import os
+import sys
 import pandas as pd
+from PIL import Image, ImageTk
 from library import load_data, save_data  # Модуль для загрузки, сохранения и открытия файлов
 import graph_reports  # Модуль для отображения графиков
 import filter  # Модуль для фильтрации данных
 import sheet_report  # Модуль для создания текстовых отчетов
-
+sys.path.append("../../work")
 
 def open_reports():
     try:
@@ -44,13 +46,14 @@ class Application(tk.Tk):
         self.view_clubs_button = None
         self.add_club_button = None
         self.title("Data Analyze")
-        self.geometry("800x600")
-        self.configure(bg="white")
+        self.geometry("1200x650")
+        self.configure(bg="#292828")
 
         # Определение путей к файлам данных и отчетов относительно расположения скрипта
         base_dir = os.path.abspath(os.path.dirname(__file__))
         self.data_file_path = os.path.join(base_dir, "..", "data", "new_normalized_data.xlsx")
         self.report_file_path = os.path.join(base_dir, "..", "reports.xlsx")
+        self.picture1_file_path = os.path.join(base_dir, "..", "data", "picture1.png")
 
         # Загрузка данных
         try:
@@ -66,37 +69,43 @@ class Application(tk.Tk):
         self.create_widgets()
 
     def create_widgets(self):
-        # Конфигурация кнопок
-        button_config = {
-            'bg': "#9400D3",
-            'fg': "white",
-            'padx': 10,  # Corrected from 'pads' to 'padx'
-            'pady': 5,  # Corrected from 'pads' to 'pady'
-            'font': ("Times New Roman", 14),
-            'width': self.button_width
-        }
+        label = ttk.Label(text='Добро пожаловать', font=('Open Sans Light', 22),
+                        justify='center', foreground='white', background='#292828')
 
-        # Создание кнопок
-        self.add_club_button = tk.Button(self, text="Добавить клуб", command=self.add_club, **button_config)
-        self.add_club_button.pack(pady=10)
+        label.grid(row='1', column='1', padx=10, pady=10)
+        self.columnconfigure(index=1, weight=1)
+        self.columnconfigure(index=2, weight=2)
 
-        self.view_clubs_button = tk.Button(self, text="Просмотреть клубы", command=self.view_clubs, **button_config)
-        self.view_clubs_button.pack(pady=10)
+        button_add_clubs = tk.Button(text='Добавить клуб', font=('Open Sans', 20),
+                                fg='white', background='#805959',
+                                command=self.add_club)
+        button_show_clubs = tk.Button(text='Просмотреть клубы', font=('Open Sans', 20),
+                                fg='white', background='#805959',
+                                command=self.view_clubs)
+        button_show_graphs = tk.Button(text='Посмотреть графики', font=('Open Sans', 20),
+                                    fg='white', background='#5C6C84',
+                                    command=self.open_view_graphs_window)
+        button_show_excel = tk.Button(text='Просмотреть таблицу Excel', font=('Open Sans', 20),
+                                fg='white', background='#805959',
+                                command=self.view_excel_table)
+        botton_generate_reports = tk.Button(text='Создать отчеты', font=('Open Sans', 20),
+                                fg='white', background='#805959',
+                                command=generate_reports)
+        button_open_reports = tk.Button(text='Открыть отчеты', font=('Open Sans', 20),
+                                    fg='white', background='#5C6C84',
+                                    command=open_reports)
 
-        self.view_graphs_button = tk.Button(self, text="Посмотреть графики", command=self.open_view_graphs_window,
-                                            **button_config)
-        self.view_graphs_button.pack(pady=20)
+        button_add_clubs.grid(row='2', column='1')
+        button_show_clubs.grid(row='3', column='1')
+        button_show_graphs.grid(row='4', column='1')
+        button_show_excel.grid(row='5', column='1')
+        botton_generate_reports.grid(row='6', column='1')
+        button_open_reports.grid(row='7', column='1')
 
-        self.view_excel_button = tk.Button(self, text="Просмотреть таблицу Excel", command=self.view_excel_table,
-                                           **button_config)
-        self.view_excel_button.pack(pady=10)
-
-        self.generate_reports_button = tk.Button(self, text="Создать отчеты", command=generate_reports,
-                                                 **button_config)
-        self.generate_reports_button.pack(pady=10)
-
-        self.open_reports_button = tk.Button(self, text="Открыть отчеты", command=open_reports, **button_config)
-        self.open_reports_button.pack(pady=10)
+        canvas = tk.Canvas(self, height=600, width=800)
+        img = tk.PhotoImage(file = self.picture1_file_path) 
+        image = canvas.create_image(0, 0, anchor='nw',image=img)
+        canvas.grid(row='1', column='2', rowspan='7', padx=10, pady=25)
 
     def view_excel_table(self):
         excel_window = tk.Toplevel(self)
