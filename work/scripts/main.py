@@ -14,7 +14,9 @@ from library import load_data, save_data  # Модуль для загрузки
 import graph_reports  # Модуль для отображения графиков
 import filter  # Модуль для фильтрации данных
 import sheet_report  # Модуль для создания текстовых отчетов
+
 sys.path.append("../../work")
+
 
 def open_reports():
     try:
@@ -33,6 +35,9 @@ def generate_reports():
 class Application(tk.Tk):
     def __init__(self):
         super().__init__()
+        self.img = None
+        self.display_frame = None
+        self.canvas = None
         self.entries = None
         self.entry_club_position = None
         self.entry_manager_name = None
@@ -47,7 +52,7 @@ class Application(tk.Tk):
         self.add_club_button = None
         self.title("Data Analyze")
         self.geometry("1200x650")
-        self.configure(bg="#292828")
+        self.configure(bg="white")
 
         # Определение путей к файлам данных и отчетов относительно расположения скрипта
         base_dir = os.path.abspath(os.path.dirname(__file__))
@@ -66,68 +71,85 @@ class Application(tk.Tk):
             return
 
         self.button_width = 20
+        self.button_height = 2
         self.create_widgets()
 
     def create_widgets(self):
         label = ttk.Label(text='Добро пожаловать', font=('Open Sans Light', 22),
-                        justify='center', foreground='white', background='#292828')
+                          justify='center', foreground='black', background='white')
 
-        label.grid(row='1', column='1', padx=10, pady=10)
-        self.columnconfigure(index=1, weight=1)
-        self.columnconfigure(index=2, weight=2)
+        label.grid(row=0, column=0, padx=10, pady=10)
+        self.columnconfigure(index=0, weight=1)
+        self.columnconfigure(index=1, weight=2)
 
-        button_add_clubs = tk.Button(text='Добавить клуб', font=('Open Sans', 20),
-                                fg='white', background='#805959',
-                                command=self.add_club)
-        button_show_clubs = tk.Button(text='Просмотреть клубы', font=('Open Sans', 20),
-                                fg='white', background='#805959',
-                                command=self.view_clubs)
-        button_show_graphs = tk.Button(text='Посмотреть графики', font=('Open Sans', 20),
-                                    fg='white', background='#5C6C84',
-                                    command=self.open_view_graphs_window)
-        button_show_excel = tk.Button(text='Просмотреть таблицу Excel', font=('Open Sans', 20),
-                                fg='white', background='#805959',
-                                command=self.view_excel_table)
-        botton_generate_reports = tk.Button(text='Создать отчеты', font=('Open Sans', 20),
-                                fg='white', background='#805959',
-                                command=generate_reports)
-        button_open_reports = tk.Button(text='Открыть отчеты', font=('Open Sans', 20),
-                                    fg='white', background='#5C6C84',
-                                    command=open_reports)
+        button_color = "#9400D3"
 
-        button_add_clubs.grid(row='2', column='1')
-        button_show_clubs.grid(row='3', column='1')
-        button_show_graphs.grid(row='4', column='1')
-        button_show_excel.grid(row='5', column='1')
-        botton_generate_reports.grid(row='6', column='1')
-        button_open_reports.grid(row='7', column='1')
+        button_add_clubs = tk.Button(text='Добавить клуб', font=('Times New Roman', 15),
+                                     fg='white', background=button_color,
+                                     width=self.button_width, height=self.button_height,
+                                     command=self.add_club)
+        button_show_clubs = tk.Button(text='Просмотреть клубы', font=('Times New Roman', 15),
+                                      fg='white', background=button_color,
+                                      width=self.button_width, height=self.button_height,
+                                      command=self.view_clubs)
+        button_show_graphs = tk.Button(text='Посмотреть графики', font=('Times New Roman', 15),
+                                       fg='white', background=button_color,
+                                       width=self.button_width, height=self.button_height,
+                                       command=self.open_view_graphs)
+        button_show_excel = tk.Button(text='Открыть таблицу Excel', font=('Times New Roman', 15),
+                                      fg='white', background=button_color,
+                                      width=self.button_width, height=self.button_height,
+                                      command=self.view_excel_table)
+        button_generate_reports = tk.Button(text='Создать отчеты', font=('Times New Roman', 15),
+                                            fg='white', background=button_color,
+                                            width=self.button_width, height=self.button_height,
+                                            command=generate_reports)
+        button_open_reports = tk.Button(text='Открыть отчеты', font=('Times New Roman', 15),
+                                        fg='white', background=button_color,
+                                        width=self.button_width, height=self.button_height,
+                                        command=open_reports)
 
-        canvas = tk.Canvas(self, height=600, width=800)
-        img = tk.PhotoImage(file = self.picture1_file_path) 
-        image = canvas.create_image(0, 0, anchor='nw',image=img)
-        canvas.grid(row='1', column='2', rowspan='7', padx=10, pady=25)
+        button_add_clubs.grid(row=1, column=0, pady=5)
+        button_show_clubs.grid(row=2, column=0, pady=5)
+        button_show_graphs.grid(row=3, column=0, pady=5)
+        button_show_excel.grid(row=4, column=0, pady=5)
+        button_generate_reports.grid(row=5, column=0, pady=5)
+        button_open_reports.grid(row=6, column=0, pady=5)
+
+        self.display_frame = tk.Frame(self, bg="white")
+        self.display_frame.grid(row=0, column=1, rowspan=7, padx=10, pady=25, sticky="nsew")
+
+        self.canvas = tk.Canvas(self.display_frame, bg="white", height=600, width=800)
+        self.canvas.pack(fill="both", expand=True)
+
+        try:
+            self.img = Image.open(self.picture1_file_path)
+            self.img = self.img.resize((800, 600))
+            self.img = ImageTk.PhotoImage(self.img)
+            self.canvas.create_image(0, 0, anchor='nw', image=self.img)
+        except Exception as e:
+            messagebox.showerror("Ошибка", f"Не удалось загрузить изображение: {e}")
 
     def view_excel_table(self):
-        excel_window = tk.Toplevel(self)
-        excel_window.title("Просмотр таблицы Excel")
+        for widget in self.display_frame.winfo_children():
+            widget.destroy()
 
-        tree = ttk.Treeview(excel_window, columns=tuple(self.clubs_df.columns), show='headings')
-
+        tree = ttk.Treeview(self.display_frame, columns=tuple(self.clubs_df.columns), show='headings')
         for col in self.clubs_df.columns:
             tree.heading(col, text=col)
 
         for _, row in self.clubs_df.iterrows():
             tree.insert("", tk.END, values=tuple(row))
 
-        scrollbar = ttk.Scrollbar(excel_window, orient="vertical", command=tree.yview)
-        scrollbar.pack(side="right", fill="y")
+        scrollbar = ttk.Scrollbar(self.display_frame, orient="vertical", command=tree.yview)
         tree.configure(yscrollcommand=scrollbar.set)
         tree.pack(fill="both", expand=True)
+        scrollbar.pack(side="right", fill="y")
 
-        filter_frame = tk.Frame(excel_window)
+        filter_frame = tk.Frame(self.display_frame, bg="white")
         filter_frame.pack(pady=10)
 
-        label_filter = tk.Label(filter_frame, text="Введите club_id:")
+        label_filter = tk.Label(filter_frame, text="Введите club_id:", bg="white")
         label_filter.grid(row=0, column=0)
 
         entry_filter = tk.Entry(filter_frame)
@@ -137,10 +159,12 @@ class Application(tk.Tk):
                                   command=lambda: filter.apply_filter(tree, entry_filter.get(), self.clubs_df))
         filter_button.grid(row=0, column=2)
 
-    def open_view_graphs_window(self):
-        graphs_window = tk.Toplevel(self)
-        graphs_window.title("Просмотр графиков")
-        graphs_window.geometry("500x500")
+    def open_view_graphs(self):
+        for widget in self.display_frame.winfo_children():
+            widget.destroy()
+
+        graphs_frame = tk.Frame(self.display_frame, bg="white")
+        graphs_frame.pack(fill="both", expand=True)
 
         button_color = "#9400D3"
 
@@ -155,13 +179,16 @@ class Application(tk.Tk):
         ]
 
         for text, command in graphs:
-            button = tk.Button(graphs_window, text=text, command=command, bg=button_color, fg="white", padx=10, pady=5,
+            button = tk.Button(graphs_frame, text=text, command=command, bg=button_color, fg="white", padx=10, pady=5,
                                font=("Times New Roman", 14), width=self.button_width)
             button.pack(pady=10)
 
-    def add_club(self):
-        form_window = tk.Toplevel(self)
-        form_window.title("Добавить клуб")
+    def add_club(self, button_color=None):
+        for widget in self.display_frame.winfo_children():
+            widget.destroy()
+
+        form_frame = tk.Frame(self.display_frame, bg="white")
+        form_frame.pack(fill="both", expand=True)
 
         fields = [
             ("ID клуба", self.entry_club_id),
@@ -174,49 +201,34 @@ class Application(tk.Tk):
         self.entries = {}
 
         for label_text, entry_var in fields:
-            label = tk.Label(form_window, text=label_text)
+            label = tk.Label(form_frame, text=label_text, bg="white")
             label.pack(pady=5)
-            entry_var = tk.Entry(form_window)
+            entry_var = tk.Entry(form_frame)
             entry_var.pack(pady=5)
             self.entries[label_text] = entry_var
 
-        submit_button = tk.Button(form_window, text="Добавить клуб", command=self.success_added_club, bg="#909090",
-                                  fg="white",
-                                  padx=10, pady=5, font=("Times New Roman", 14))
+        submit_button = tk.Button(form_frame, text="Добавить клуб", command=self.success_added_club, bg=button_color,
+                                  fg="white", padx=10, pady=5, font=("Times New Roman", 14))
         submit_button.pack(pady=10)
 
     def success_added_club(self):
         new_row = pd.DataFrame([[
-            self.entries["Club ID"].get(),
-            self.entries["Club Name"].get(),
-            self.entries["Club Position"].get(),
-            self.entries["Manager Name"].get(),
-            self.entries["Club Formation"].get()
+            self.entries["ID клуба"].get(),
+            self.entries["Название клуба"].get(),
+            self.entries["Позиция клуба"].get(),
+            self.entries["Имя менеджера"].get(),
+            self.entries["Стратегия клуба"].get()
         ]], columns=self.clubs_df.columns)
 
         self.clubs_df = self.clubs_df.append(new_row, ignore_index=True)
 
         save_data(self.data_file_path, clubs_normalized=self.clubs_df, matches_normalized=self.matches_df,
-                          club_managers=self.managers_df)
+                  club_managers=self.managers_df)
 
         messagebox.showinfo("Добавить клуб", "Клуб успешно добавлен.")
 
     def view_clubs(self):
-        clubs_window = tk.Toplevel(self)
-        clubs_window.title("Club List")
-
-        tree = ttk.Treeview(clubs_window, columns=tuple(self.clubs_df.columns), show='headings')
-
-        for col in self.clubs_df.columns:
-            tree.heading(col, text=col)
-
-        for _, row in self.clubs_df.iterrows():
-            tree.insert("", tk.END, values=tuple(row))
-
-        scrollbar = ttk.Scrollbar(clubs_window, orient="vertical", command=tree.yview)
-        scrollbar.pack(side="right", fill="y")
-        tree.configure(yscrollcommand=scrollbar.set)
-        tree.pack(fill="both", expand=True)
+        self.view_excel_table()
 
 
 if __name__ == "__main__":
