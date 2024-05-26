@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sun May 15 20:04:57 2024
+Created on Wed May 15 20:04:57 2024
 
 @author: Бабенко А, Осинцев К
 """
@@ -14,6 +14,7 @@ from library import load_data, save_data  # Модуль для загрузки
 import graph_reports  # Модуль для отображения графиков
 import filter  # Модуль для фильтрации данных
 import sheet_report  # Модуль для создания текстовых отчетов
+
 
 sys.path.append("../../work")
 
@@ -84,30 +85,22 @@ class Application(tk.Tk):
 
         button_color = "#9400D3"
 
-        button_add_clubs = tk.Button(text='Добавить клуб', font=('Times New Roman', 15),
-                                     fg='white', background=button_color,
-                                     width=self.button_width, height=self.button_height,
-                                     command=self.add_club)
-        button_show_clubs = tk.Button(text='Просмотреть клубы', font=('Times New Roman', 15),
-                                      fg='white', background=button_color,
-                                      width=self.button_width, height=self.button_height,
-                                      command=self.view_clubs)
-        button_show_graphs = tk.Button(text='Посмотреть графики', font=('Times New Roman', 15),
-                                       fg='white', background=button_color,
-                                       width=self.button_width, height=self.button_height,
-                                       command=self.open_view_graphs)
-        button_show_excel = tk.Button(text='Открыть таблицу Excel', font=('Times New Roman', 15),
-                                      fg='white', background=button_color,
-                                      width=self.button_width, height=self.button_height,
-                                      command=self.view_excel_table)
-        button_generate_reports = tk.Button(text='Создать отчеты', font=('Times New Roman', 15),
-                                            fg='white', background=button_color,
-                                            width=self.button_width, height=self.button_height,
-                                            command=generate_reports)
-        button_open_reports = tk.Button(text='Открыть отчеты', font=('Times New Roman', 15),
-                                        fg='white', background=button_color,
-                                        width=self.button_width, height=self.button_height,
-                                        command=open_reports)
+        # Конфигурация кнопок
+        button_config = {
+            'bg': "#9400D3",
+            'fg': "white",
+            'padx': 25,  # Corrected from 'pads' to 'padx'
+            'pady': 20,  # Corrected from 'pads' to 'pady'
+            'font': ("Times New Roman", 14),
+            'width': self.button_width
+        }
+
+        button_add_clubs = tk.Button(text='Добавить клуб', command=self.add_club, **button_config)
+        button_show_clubs = tk.Button(text='Просмотреть клубы', command=self.view_clubs, **button_config)
+        button_show_graphs = tk.Button(text='Посмотреть графики', command=self.open_view_graphs, **button_config)
+        button_show_excel = tk.Button(text='Открыть таблицу Excel', command=self.view_excel_table, **button_config)
+        button_generate_reports = tk.Button(text='Создать отчеты', command=generate_reports, **button_config)
+        button_open_reports = tk.Button(text='Открыть отчеты', command=open_reports, **button_config)
 
         button_add_clubs.grid(row=1, column=0, pady=5)
         button_show_clubs.grid(row=2, column=0, pady=5)
