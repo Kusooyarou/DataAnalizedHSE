@@ -14,6 +14,8 @@ from library import load_data, save_data  # Модуль для загрузки
 import graph_reports  # Модуль для отображения графиков
 import filter  # Модуль для фильтрации данных
 import sheet_report  # Модуль для создания текстовых отчетов
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import club_operations  # Импорт нового модуля
 
 
 sys.path.append("../../work")
@@ -83,20 +85,18 @@ class Application(tk.Tk):
         self.columnconfigure(index=0, weight=1)
         self.columnconfigure(index=1, weight=2)
 
-        button_color = "#9400D3"
-
         # Конфигурация кнопок
         button_config = {
             'bg': "#9400D3",
             'fg': "white",
-            'padx': 25,  # Corrected from 'pads' to 'padx'
-            'pady': 20,  # Corrected from 'pads' to 'pady'
+            'padx': 25,
+            'pady': 20,
             'font': ("Times New Roman", 14),
             'width': self.button_width
         }
 
-        button_add_clubs = tk.Button(text='Добавить клуб', command=self.add_club, **button_config)
-        button_show_clubs = tk.Button(text='Просмотреть клубы', command=self.view_clubs, **button_config)
+        button_add_clubs = tk.Button(text='Добавить клуб', command=lambda: club_operations.add_club(self), **button_config)
+        button_show_clubs = tk.Button(text='Просмотреть клубы', command=lambda: club_operations.view_clubs(self), **button_config)
         button_show_graphs = tk.Button(text='Посмотреть графики', command=self.open_view_graphs, **button_config)
         button_show_excel = tk.Button(text='Открыть таблицу Excel', command=self.view_excel_table, **button_config)
         button_generate_reports = tk.Button(text='Создать отчеты', command=generate_reports, **button_config)
@@ -124,6 +124,12 @@ class Application(tk.Tk):
             messagebox.showerror("Ошибка", f"Не удалось загрузить изображение: {e}")
 
     def view_excel_table(self):
+        def reset_filter():
+            for item in tree.get_children():
+                tree.delete(item)
+            for _, row in self.clubs_df.iterrows():
+                tree.insert("", tk.END, values=tuple(row))
+
         for widget in self.display_frame.winfo_children():
             widget.destroy()
 
@@ -152,6 +158,18 @@ class Application(tk.Tk):
                                   command=lambda: filter.apply_filter(tree, entry_filter.get(), self.clubs_df))
         filter_button.grid(row=0, column=2)
 
+        reset_button = tk.Button(filter_frame, text="Сбросить фильтр", command=reset_filter)
+        reset_button.grid(row=0, column=3)
+
+    def show_graph(self, graph_function):
+        for widget in self.display_frame.winfo_children():
+            widget.destroy()
+
+        fig = graph_function()
+        canvas = FigureCanvasTkAgg(fig, master=self.display_frame)
+        canvas.draw()
+        canvas.get_tk_widget().pack(fill="both", expand=True)
+
     def open_view_graphs(self):
         for widget in self.display_frame.winfo_children():
             widget.destroy()
@@ -172,56 +190,9 @@ class Application(tk.Tk):
         ]
 
         for text, command in graphs:
-            button = tk.Button(graphs_frame, text=text, command=command, bg=button_color, fg="white", padx=10, pady=5,
+            button = tk.Button(graphs_frame, text=text, command=lambda cmd=command: self.show_graph(cmd), bg=button_color, fg="white", padx=10, pady=5,
                                font=("Times New Roman", 14), width=self.button_width)
             button.pack(pady=10)
-
-    def add_club(self, button_color=None):
-        for widget in self.display_frame.winfo_children():
-            widget.destroy()
-
-        form_frame = tk.Frame(self.display_frame, bg="white")
-        form_frame.pack(fill="both", expand=True)
-
-        fields = [
-            ("ID клуба", self.entry_club_id),
-            ("Название клуба", self.entry_club_name),
-            ("Позиция клуба", self.entry_club_position),
-            ("Имя менеджера", self.entry_manager_name),
-            ("Стратегия клуба", self.entry_club_formation)
-        ]
-
-        self.entries = {}
-
-        for label_text, entry_var in fields:
-            label = tk.Label(form_frame, text=label_text, bg="white")
-            label.pack(pady=5)
-            entry_var = tk.Entry(form_frame)
-            entry_var.pack(pady=5)
-            self.entries[label_text] = entry_var
-
-        submit_button = tk.Button(form_frame, text="Добавить клуб", command=self.success_added_club, bg=button_color,
-                                  fg="white", padx=10, pady=5, font=("Times New Roman", 14))
-        submit_button.pack(pady=10)
-
-    def success_added_club(self):
-        new_row = pd.DataFrame([[
-            self.entries["ID клуба"].get(),
-            self.entries["Название клуба"].get(),
-            self.entries["Позиция клуба"].get(),
-            self.entries["Имя менеджера"].get(),
-            self.entries["Стратегия клуба"].get()
-        ]], columns=self.clubs_df.columns)
-
-        self.clubs_df = self.clubs_df.append(new_row, ignore_index=True)
-
-        save_data(self.data_file_path, clubs_normalized=self.clubs_df, matches_normalized=self.matches_df,
-                  club_managers=self.managers_df)
-
-        messagebox.showinfo("Добавить клуб", "Клуб успешно добавлен.")
-
-    def view_clubs(self):
-        self.view_excel_table()
 
 
 if __name__ == "__main__":
