@@ -5,6 +5,17 @@ from library import save_data
 
 
 def add_club(app, button_color=None):
+    """
+    Отображает форму для добавления нового клуба.
+
+    Аргументы:
+        app (Application): Экземпляр главного приложения.
+        button_color (str): Цвет кнопки для добавления клуба.
+
+    Действия:
+        Очищает текущий фрейм отображения и создает новую форму для ввода данных клуба.
+        При нажатии кнопки "Добавить клуб" вызывается функция success_added_club.
+    """
     for widget in app.display_frame.winfo_children():
         widget.destroy()
 
@@ -34,6 +45,16 @@ def add_club(app, button_color=None):
 
 
 def success_added_club(app):
+    """
+    Добавляет новый клуб в DataFrame и сохраняет обновленные данные.
+
+    Аргументы:
+        app (Application): Экземпляр главного приложения.
+
+    Действия:
+        Получает данные из полей ввода, добавляет новую строку в DataFrame клубов,
+        сохраняет обновленный DataFrame в файл и отображает сообщение о успешном добавлении клуба.
+    """
     new_row = pd.DataFrame([[
         app.entries["ID клуба"].get(),
         app.entries["Название клуба"].get(),
@@ -51,4 +72,13 @@ def success_added_club(app):
 
 
 def view_clubs(app):
+    """
+    Отображает таблицу с данными о клубах.
+
+    Аргументы:
+        app (Application): Экземпляр главного приложения.
+
+    Действия:
+        Вызывает метод view_excel_table главного приложения для отображения данных о клубах.
+    """
     app.view_excel_table()

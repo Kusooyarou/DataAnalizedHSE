@@ -1,16 +1,15 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed May 15 20:04:57 2024
+Создано 15 мая 2024 года
 
-@author: Бабенко А, Осинцев К
+Авторы: Бабенко А, Осинцев К
 """
 import tkinter as tk
 from tkinter import messagebox, ttk
 import os
 import sys
-import pandas as pd
 from PIL import Image, ImageTk
-from library import load_data, save_data  # Модуль для загрузки, сохранения и открытия файлов
+from library import load_data  # Модуль для загрузки, сохранения и открытия файлов
 import graph_reports  # Модуль для отображения графиков
 import filter  # Модуль для фильтрации данных
 import sheet_report  # Модуль для создания текстовых отчетов
@@ -22,6 +21,13 @@ sys.path.append("../../work")
 
 
 def open_reports():
+    """
+    Открывает файл отчетов 'reports.xlsx', если он существует.
+
+    Исключения:
+        FileNotFoundError: Если файл отчетов не найден.
+        Exception: Если произошла ошибка при открытии файла.
+    """
     try:
         os.startfile("reports.xlsx")
     except FileNotFoundError:
@@ -31,12 +37,38 @@ def open_reports():
 
 
 def generate_reports():
+    """
+    Генерирует отчеты, вызывая основную функцию из модуля sheet_report,
+    и отображает сообщение об успешном создании.
+    """
     sheet_report.main()
     messagebox.showinfo("Создать отчеты", "Отчеты успешно созданы.")
 
 
 class Application(tk.Tk):
+    """
+    Основной класс приложения для анализа данных.
+
+    Этот класс инициализирует главное окно, загружает данные и создает виджеты.
+
+    Атрибуты:
+        img (ImageTk.PhotoImage): Фоновое изображение для фрейма отображения.
+        display_frame (tk.Frame): Фрейм, в котором отображается основной контент.
+        canvas (tk.Canvas): Канва для отображения фонового изображения.
+        clubs_df (pd.DataFrame): DataFrame с данными о клубах.
+        matches_df (pd.DataFrame): DataFrame с данными о матчах.
+        managers_df (pd.DataFrame): DataFrame с данными о менеджерах.
+        data_file_path (str): Путь к файлу данных.
+        report_file_path (str): Путь к файлу отчетов.
+        picture1_file_path (str): Путь к фоновому изображению.
+        button_width (int): Ширина кнопок.
+        button_height (int): Высота кнопок.
+    """
+
     def __init__(self):
+        """
+        Инициализирует приложение, загружает данные и настраивает главное окно и виджеты.
+        """
         super().__init__()
         self.img = None
         self.display_frame = None
@@ -78,6 +110,9 @@ class Application(tk.Tk):
         self.create_widgets()
 
     def create_widgets(self):
+        """
+        Создает и настраивает виджеты в главном окне приложения.
+        """
         label = ttk.Label(text='Добро пожаловать', font=('Open Sans Light', 22),
                           justify='center', foreground='black', background='white')
 
@@ -95,12 +130,18 @@ class Application(tk.Tk):
             'width': self.button_width
         }
 
-        button_add_clubs = tk.Button(text='Добавить клуб', command=lambda: club_operations.add_club(self), **button_config)
-        button_show_clubs = tk.Button(text='Просмотреть клубы', command=lambda: club_operations.view_clubs(self), **button_config)
-        button_show_graphs = tk.Button(text='Посмотреть графики', command=self.open_view_graphs, **button_config)
-        button_show_excel = tk.Button(text='Открыть таблицу Excel', command=self.view_excel_table, **button_config)
-        button_generate_reports = tk.Button(text='Создать отчеты', command=generate_reports, **button_config)
-        button_open_reports = tk.Button(text='Открыть отчеты', command=open_reports, **button_config)
+        button_add_clubs = tk.Button(text='Добавить клуб', command=lambda: club_operations.add_club(self),
+                                     **button_config)
+        button_show_clubs = tk.Button(text='Просмотреть клубы', command=lambda: club_operations.view_clubs(self),
+                                      **button_config)
+        button_show_graphs = tk.Button(text='Посмотреть графики', command=self.open_view_graphs,
+                                       **button_config)
+        button_show_excel = tk.Button(text='Открыть таблицу Excel', command=self.view_excel_table,
+                                      **button_config)
+        button_generate_reports = tk.Button(text='Создать отчеты', command=generate_reports,
+                                            **button_config)
+        button_open_reports = tk.Button(text='Открыть отчеты', command=open_reports,
+                                        **button_config)
 
         button_add_clubs.grid(row=1, column=0, pady=5)
         button_show_clubs.grid(row=2, column=0, pady=5)
@@ -124,7 +165,14 @@ class Application(tk.Tk):
             messagebox.showerror("Ошибка", f"Не удалось загрузить изображение: {e}")
 
     def view_excel_table(self):
+        """
+        Отображает таблицу Excel с данными о клубах в фрейме отображения и предоставляет
+        возможность фильтрации данных.
+        """
         def reset_filter():
+            """
+            Сбрасывает примененный фильтр и отображает исходные данные о клубах.
+            """
             for item in tree.get_children():
                 tree.delete(item)
             for _, row in self.clubs_df.iterrows():
@@ -162,6 +210,12 @@ class Application(tk.Tk):
         reset_button.grid(row=0, column=3)
 
     def show_graph(self, graph_function):
+        """
+        Отображает график, сгенерированный указанной функцией, во фрейме отображения.
+
+        Аргументы:
+            graph_function (function): Функция, которая генерирует отображаемый график.
+        """
         for widget in self.display_frame.winfo_children():
             widget.destroy()
 
@@ -171,6 +225,9 @@ class Application(tk.Tk):
         canvas.get_tk_widget().pack(fill="both", expand=True)
 
     def open_view_graphs(self):
+        """
+        Открывает фрейм для выбора и отображения различных графиков.
+        """
         for widget in self.display_frame.winfo_children():
             widget.destroy()
 
@@ -190,7 +247,8 @@ class Application(tk.Tk):
         ]
 
         for text, command in graphs:
-            button = tk.Button(graphs_frame, text=text, command=lambda cmd=command: self.show_graph(cmd), bg=button_color, fg="white", padx=10, pady=5,
+            button = tk.Button(graphs_frame, text=text, command=lambda cmd=command: self.show_graph(cmd),
+                               bg=button_color, fg="white", padx=10, pady=5,
                                font=("Times New Roman", 14), width=self.button_width)
             button.pack(pady=10)
 

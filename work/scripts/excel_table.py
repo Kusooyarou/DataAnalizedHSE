@@ -10,6 +10,16 @@ import filter
 
 
 def view_excel_table(clubs_df):
+    """
+    Отображает окно для просмотра таблицы Excel с данными о клубах.
+
+    Аргументы:
+        clubs_df (pandas.DataFrame): DataFrame, содержащий данные о клубах.
+
+    Действия:
+        Создает новое окно с Treeview для отображения данных о клубах.
+        Добавляет возможность фильтрации данных по club_id.
+    """
     excel_window = tk.Toplevel()
     excel_window.title("Просмотр таблицы Excel")
 

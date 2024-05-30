@@ -1,6 +1,19 @@
 import tkinter as tk
 
+
 def apply_filter(tree, club_id, clubs_df):
+    """
+    Применяет фильтр к данным и обновляет отображение дерева.
+
+    Аргументы:
+        tree (ttk. Treeview): Виджет Treeview, который отображает данные.
+        club_id (str): Значение club_id для фильтрации данных.
+        clubs_df (pandas.DataFrame): DataFrame, содержащий данные о клубах.
+
+    Действия:
+        Очищает текущее содержимое дерева и вставляет только те строки, которые
+        соответствуют указанному club_id.
+    """
     # Очищаем дерево перед применением фильтра
     tree.delete(*tree.get_children())
 
@@ -11,7 +24,20 @@ def apply_filter(tree, club_id, clubs_df):
     for index, row in filtered_data.iterrows():
         tree.insert("", tk.END, values=tuple(row))
 
+
 def reset_filter(tree, entry_filter, clubs_df):
+    """
+    Сбрасывает фильтр и возвращает полное отображение данных в дереве.
+
+    Аргументы:
+        tree (ttk. Treeview): Виджет Treeview, который отображает данные.
+        Entry_filter (tk. Entry): Поле ввода для значения club_id.
+        Clubs_df (pandas. DataFrame): DataFrame, содержащий данные о клубах.
+
+    Действия:
+        Очищает поле ввода, очищает текущее содержимое дерева и вставляет
+        все строки из DataFrame обратно в дерево.
+    """
     # Очищаем поле ввода для фильтрации
     entry_filter.delete(0, tk.END)
 
