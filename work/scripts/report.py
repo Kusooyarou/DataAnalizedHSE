@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Sun May 15 20:04:57 2024
+
+@author: Бабенко А.
+"""
+
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns

@@ -10,12 +10,10 @@ import os
 import sys
 from PIL import Image, ImageTk
 from library import load_data  # Модуль для загрузки, сохранения и открытия файлов
-import graph_reports  # Модуль для отображения графиков
 import filter  # Модуль для фильтрации данных
 import sheet_report  # Модуль для создания текстовых отчетов
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import club_operations  # Импорт нового модуля
-
+from graph_display import open_view_graphs, show_graph
 
 sys.path.append("../../work")
 
@@ -210,47 +208,10 @@ class Application(tk.Tk):
         reset_button.grid(row=0, column=3)
 
     def show_graph(self, graph_function):
-        """
-        Отображает график, сгенерированный указанной функцией, во фрейме отображения.
-
-        Аргументы:
-            graph_function (function): Функция, которая генерирует отображаемый график.
-        """
-        for widget in self.display_frame.winfo_children():
-            widget.destroy()
-
-        fig = graph_function()
-        canvas = FigureCanvasTkAgg(fig, master=self.display_frame)
-        canvas.draw()
-        canvas.get_tk_widget().pack(fill="both", expand=True)
+        show_graph(self.display_frame, graph_function)
 
     def open_view_graphs(self):
-        """
-        Открывает фрейм для выбора и отображения различных графиков.
-        """
-        for widget in self.display_frame.winfo_children():
-            widget.destroy()
-
-        graphs_frame = tk.Frame(self.display_frame, bg="white")
-        graphs_frame.pack(fill="both", expand=True)
-
-        button_color = "#9400D3"
-
-        graphs = [
-            ("График 1", graph_reports.view_graph_1),
-            ("График 2", graph_reports.view_graph_2),
-            ("График 3", graph_reports.view_graph_3),
-            ("График 4", graph_reports.view_graph_4),
-            ("График 5", graph_reports.view_graph_5),
-            ("График 6", graph_reports.view_graph_6),
-            ("График 7", graph_reports.view_graph_7),
-        ]
-
-        for text, command in graphs:
-            button = tk.Button(graphs_frame, text=text, command=lambda cmd=command: self.show_graph(cmd),
-                               bg=button_color, fg="white", padx=10, pady=5,
-                               font=("Times New Roman", 14), width=self.button_width)
-            button.pack(pady=10)
+        open_view_graphs(self.display_frame)
 
 
 if __name__ == "__main__":

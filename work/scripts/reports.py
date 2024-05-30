@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Sun May 15 20:04:57 2024
+
+@author: Бабенко А.
+"""
+
 import os
 import sys
 from tkinter import messagebox
