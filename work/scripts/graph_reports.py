@@ -46,7 +46,8 @@ def view_graph_1():
     plt.yticks(range(0, top_30_matches_count['matches_count'].max() + 1, 5))
     plt.tight_layout()
     plt.savefig(os.path.join(output_folder, 'top_30_matches_per_club_barplot.png'))
-    plt.show()
+    
+    return 'top_30_matches_per_club_barplot.png'
 
 
 def view_graph_2():
@@ -76,7 +77,8 @@ def view_graph_2():
     plt.xticks(rotation=90, fontsize=10)
     plt.tight_layout()
     plt.savefig(os.path.join(output_folder, 'top_20_coaches_wins_histogram_purple_gradient.png'))
-    plt.show()
+    
+    return 'top_20_coaches_wins_histogram_purple_gradient.png'
 
 
 def view_graph_3():
@@ -103,7 +105,8 @@ def view_graph_3():
     plt.title('Категоризированная диаграмма “box-and-whiskers”', fontsize=15)
     plt.tight_layout()
     plt.savefig(os.path.join(output_folder, 'categorized_boxplot.png'))
-    plt.show()
+    
+    return 'categorized_boxplot.png'
 
 
 def view_graph_4():
@@ -131,7 +134,8 @@ def view_graph_4():
     plt.legend(title='ID соревнования', fontsize=10)
     plt.tight_layout()
     plt.savefig(os.path.join(output_folder, 'categorized_scatterplot.png'))
-    plt.show()
+    
+    return 'categorized_scatterplot.png'
 
 
 def view_graph_5():
@@ -155,7 +159,8 @@ def view_graph_5():
     plt.xticks(rotation=45, fontsize=10)
     plt.tight_layout()
     plt.savefig(os.path.join(output_folder, 'matches_per_season_histogram.png'))
-    plt.show()
+    
+    return 'matches_per_season_histogram.png'
 
 
 def view_graph_6():
@@ -186,7 +191,8 @@ def view_graph_6():
     plt.title('Зависимость голов домашней команды от позиции клуба', fontsize=15)
     plt.tight_layout()
     plt.savefig(os.path.join(output_folder, 'home_goals_vs_club_position_scatterplot.png'))
-    plt.show()
+    
+    return 'home_goals_vs_club_position_scatterplot.png'
 
 
 def view_graph_7():
@@ -227,5 +233,6 @@ def view_graph_7():
     plt.xticks(fontsize=10)
     plt.yticks(fontsize=10)
     plt.tight_layout()
-    plt.savefig('away_goals_vs_club_position_scatterplot.png')
-    plt.show()
+    plt.savefig(os.path.join(output_folder, 'away_goals_vs_club_position_scatterplot.png'))
+    
+    return 'away_goals_vs_club_position_scatterplot.png'

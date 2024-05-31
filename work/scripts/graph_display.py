@@ -4,10 +4,15 @@ Created on Sun May 15 20:04:57 2024
 
 @author: Бабенко А.
 """
+import os
+import sys
 import tkinter as tk
+from tkinter import messagebox
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from PIL import Image, ImageTk
 import graph_reports
 
+sys.path.append("../../work")
 
 def show_graph(display_frame, graph_function):
     """
@@ -21,11 +26,24 @@ def show_graph(display_frame, graph_function):
     for widget in display_frame.winfo_children():
         widget.destroy()
 
+    graphs_frame = tk.Frame(display_frame, bg="white")
+    graphs_frame.pack(fill="both", expand=True)
+
     # Генерация графика с помощью переданной функции
     fig = graph_function()
-    canvas = FigureCanvasTkAgg(fig, master=display_frame)
-    canvas.draw()
-    canvas.get_tk_widget().pack(fill="both", expand=True)
+    
+    canvas = tk.Canvas(graphs_frame, bg="white", height=600, width=800)
+    canvas.pack(fill="both", expand=True)
+
+    try:
+        global img
+        base_dir = os.path.abspath(os.path.dirname(__file__))
+        img = Image.open(os.path.join(base_dir, "outputs", fig))
+        img = img.resize((800, 600))
+        img = ImageTk.PhotoImage(img)
+        canvas.create_image(0, 0, anchor='nw', image=img)
+    except Exception as e:
+            messagebox.showerror("Ошибка", f"Не удалось загрузить изображение: {e}")
 
 
 def open_view_graphs(display_frame):
