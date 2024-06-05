@@ -79,7 +79,7 @@ def generate_text_reports(clubs_normalized: pd.DataFrame, matches_normalized: pd
 
         def matches_per_coach_report(matches_data: pd.DataFrame) -> pd.DataFrame:
             """
-            Отчет о количестве матчей, проведенных каждым тренером.
+            Отчет о всех матчах, проведенных каждым тренером.
 
             Parameters
             ----------
@@ -92,22 +92,30 @@ def generate_text_reports(clubs_normalized: pd.DataFrame, matches_normalized: pd
                 Сводная таблица.
             """
             try:
-                # Группируем данные о матчах по домашнему тренеру и считаем количество матчей
-                matches_count_per_coach = matches_data.groupby('home_club_manager_name').size().reset_index(
-                    name='matches_count')
+                # Отбираем нужные столбцы и сортируем данные о матчах по тренеру
+                matches_sorted = matches_data[['home_club_manager_name', 'game_id', 'home_club_id', 'away_club_id', 'season', 'home_club_goals', 'away_club_goals']].sort_values(by='home_club_manager_name')
 
-                # Строим сводную таблицу
-                pivot_table = pd.pivot_table(matches_count_per_coach, index='home_club_manager_name',
-                                             values='matches_count', aggfunc='sum')
+                # Переименовываем столбцы для удобства
+                matches_sorted.columns = ['Тренер', 'ID матча', 'ID домашнего клуба', 'ID гостевого клуба', 'Сезон', 'Голы домашнего клуба', 'Голы гостевого клуба']
 
-                return pivot_table
+                # Группируем данные по тренеру
+                grouped = matches_sorted.groupby('Тренер')
+
+                # Создаем пустой DataFrame для хранения результатов
+                result = pd.DataFrame()
+
+                # Заполняем результат
+                for name, group in grouped:
+                    result = pd.concat([result, group])
+
+                return result
             except Exception as error:
                 print(f"Произошла ошибка при создании отчета 'matches_per_coach_report': {error}")
                 return pd.DataFrame()
 
         def average_goals_per_match_report(matches_data: pd.DataFrame) -> pd.DataFrame:
             """
-            Отчет о среднем количестве голов в матче.
+            Отчет о среднем количестве голов в каждом матче.
 
             Parameters
             ----------
@@ -120,11 +128,9 @@ def generate_text_reports(clubs_normalized: pd.DataFrame, matches_normalized: pd
                 Сводная таблица.
             """
             try:
-                # Считаем среднее количество голов в матче
-                avg_goals_per_match = matches_data[['home_club_goals', 'away_club_goals']].mean().mean()
-
-                # Строим сводную таблицу
-                pivot_table = pd.DataFrame({'Среднее количество голов в матче': [avg_goals_per_match]})
+                # Создаем сводную таблицу, показывающую среднее количество голов в домашних и выездных матчах для каждого клуба в каждом сезоне
+                pivot_table = pd.pivot_table(matches_data, index=['home_club_id', 'away_club_id', 'season'],
+                                             values=['home_club_goals', 'away_club_goals'], aggfunc='mean', fill_value=0)
 
                 return pivot_table
             except Exception as error:
@@ -157,9 +163,8 @@ def generate_text_reports(clubs_normalized: pd.DataFrame, matches_normalized: pd
                 print(f"Произошла ошибка при создании отчета 'matches_per_season_report': {error}")
                 return pd.DataFrame()
 
-        reports['Отчёт матчей по тренерам'] = (matches_per_club_report
-                                               (matches_normalized, clubs_normalized))
-        reports['Отчёт матчей по клубам'] = matches_per_coach_report(matches_normalized)
+        reports['Отчёт матчей по клубам'] = matches_per_club_report(matches_normalized, clubs_normalized)
+        reports['Отчёт матчей по тренерам'] = matches_per_coach_report(matches_normalized)
         reports['Отчёт среднее по голам'] = average_goals_per_match_report(matches_normalized)
         reports['Отчёт матчи по сезонам'] = matches_per_season_report(matches_normalized)
 

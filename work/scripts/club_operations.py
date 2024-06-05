@@ -1,3 +1,9 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Sun May 15 20:04:57 2024
+
+@author: Осинцев К.
+"""
 import tkinter as tk
 from tkinter import messagebox
 import pandas as pd
@@ -19,7 +25,7 @@ def add_club(app, button_color=None):
     for widget in app.display_frame.winfo_children():
         widget.destroy()
 
-    form_frame = tk.Frame(app.display_frame, bg="white")
+    form_frame = tk.Frame(app.display_frame, bg="grey")
     form_frame.pack(fill="both", expand=True)
 
     fields = [
