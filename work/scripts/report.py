@@ -26,7 +26,8 @@ def clean_data(data: pd.DataFrame) -> pd.DataFrame:
 
     """
     if 'home_club_manager_name' in data.columns:
-        data['home_club_manager_name'] = data['home_club_manager_name'].str.strip().str.lower()
+        data['home_club_manager_name'] = data['home_club_manager_name'].str.strip(
+        ).str.lower()
     return data
 
 
@@ -76,7 +77,8 @@ def generate_text_reports(clubs_normalized: pd.DataFrame, matches_normalized: pd
 
                 return pivot_table
             except Exception as error:
-                print(f"Произошла ошибка при создании отчета 'matches_per_club_report': {error}")
+                print(
+                    f"Произошла ошибка при создании отчета 'matches_per_club_report': {error}")
                 return pd.DataFrame()
 
         def matches_per_coach_report(matches_data: pd.DataFrame) -> pd.DataFrame:
@@ -104,7 +106,8 @@ def generate_text_reports(clubs_normalized: pd.DataFrame, matches_normalized: pd
 
                 return pivot_table
             except Exception as error:
-                print(f"Произошла ошибка при создании отчета 'matches_per_coach_report': {error}")
+                print(
+                    f"Произошла ошибка при создании отчета 'matches_per_coach_report': {error}")
                 return pd.DataFrame()
 
         def average_goals_per_match_report(matches_data: pd.DataFrame) -> pd.DataFrame:
@@ -123,14 +126,17 @@ def generate_text_reports(clubs_normalized: pd.DataFrame, matches_normalized: pd
             """
             try:
                 # Считаем среднее количество голов в матче
-                avg_goals_per_match = matches_data[['home_club_goals', 'away_club_goals']].mean().mean()
+                avg_goals_per_match = matches_data[[
+                    'home_club_goals', 'away_club_goals']].mean().mean()
 
                 # Строим сводную таблицу
-                pivot_table = pd.DataFrame({'Среднее количество голов в матче': [avg_goals_per_match]})
+                pivot_table = pd.DataFrame(
+                    {'Среднее количество голов в матче': [avg_goals_per_match]})
 
                 return pivot_table
             except Exception as error:
-                print(f"Произошла ошибка при создании отчета 'average_goals_per_match_report': {error}")
+                print(
+                    f"Произошла ошибка при создании отчета 'average_goals_per_match_report': {error}")
                 return pd.DataFrame()
 
         def matches_per_season_report(matches_data: pd.DataFrame) -> pd.DataFrame:
@@ -149,21 +155,26 @@ def generate_text_reports(clubs_normalized: pd.DataFrame, matches_normalized: pd
             """
             try:
                 # Группируем данные о матчах по сезону и считаем количество матчей
-                matches_per_season = matches_data.groupby('season').size().reset_index(name='matches_count')
+                matches_per_season = matches_data.groupby(
+                    'season').size().reset_index(name='matches_count')
 
                 # Строим сводную таблицу
                 pivot_table = matches_per_season.set_index('season')
 
                 return pivot_table
             except Exception as error:
-                print(f"Произошла ошибка при создании отчета 'matches_per_season_report': {error}")
+                print(
+                    f"Произошла ошибка при создании отчета 'matches_per_season_report': {error}")
                 return pd.DataFrame()
 
         reports['Отчёт матчей по тренерам'] = (matches_per_club_report
                                                (matches_normalized, clubs_normalized))
-        reports['Отчёт матчей по клубам'] = matches_per_coach_report(matches_normalized)
-        reports['Отчёт среднее по голам'] = average_goals_per_match_report(matches_normalized)
-        reports['Отчёт матчи по сезонам'] = matches_per_season_report(matches_normalized)
+        reports['Отчёт матчей по клубам'] = matches_per_coach_report(
+            matches_normalized)
+        reports['Отчёт среднее по голам'] = average_goals_per_match_report(
+            matches_normalized)
+        reports['Отчёт матчи по сезонам'] = matches_per_season_report(
+            matches_normalized)
 
     except Exception as e:
         print(f"Произошла ошибка при генерации отчетов: {e}")
@@ -190,13 +201,16 @@ def generate_graphical_reports():
         # club_managers = pd.read_excel('../data/new_normalized_data.xlsx',
         #                              sheet_name='club_managers')
 
-        matches_count = matches_normalized.groupby('home_club_id').size().reset_index(name='matches_count')
+        matches_count = matches_normalized.groupby(
+            'home_club_id').size().reset_index(name='matches_count')
         matches_count = matches_count.merge(clubs_normalized[['club_id', 'club_name']],
                                             left_on='home_club_id', right_on='club_id')
 
-        top_30_matches_count = matches_count.sort_values(by='matches_count', ascending=False).head(204)
+        top_30_matches_count = matches_count.sort_values(
+            by='matches_count', ascending=False).head(204)
 
-        colors = sns.color_palette('Purples', n_colors=30)[::-1]  # Выбор 30 цветов из палитры Purples
+        colors = sns.color_palette('Purples', n_colors=30)[
+            ::-1]  # Выбор 30 цветов из палитры Purples
 
         # столбчатая гистограмма
         plt.figure(figsize=(12, 8))
@@ -206,16 +220,19 @@ def generate_graphical_reports():
         plt.ylabel('Количество матчей', fontsize=12)
         plt.title('Топ-30 команд по количеству матчей', fontsize=14)
         plt.xticks(rotation=90, fontsize=10)
-        plt.yticks(range(0, top_30_matches_count['matches_count'].max() + 1, 5))
+        plt.yticks(
+            range(0, top_30_matches_count['matches_count'].max() + 1, 5))
         plt.tight_layout()
         plt.savefig('top_30_matches_per_club_bar plot.png')
         plt.show()
 
         # Подсчет количества побед для каждого тренера
-        coach_wins = matches_normalized.groupby('home_club_manager_name').size().reset_index(name='wins')
+        coach_wins = matches_normalized.groupby(
+            'home_club_manager_name').size().reset_index(name='wins')
 
         # Выбор топ 20 тренеров с наибольшим количеством побед
-        top_20_coaches = coach_wins.sort_values(by='wins', ascending=False).head(20)
+        top_20_coaches = coach_wins.sort_values(
+            by='wins', ascending=False).head(20)
 
         colors = sns.color_palette('Purples', n_colors=20)[::-1]
 
@@ -227,15 +244,18 @@ def generate_graphical_reports():
         plt.xlabel('Имя тренера', fontsize=12)
         plt.ylabel('Количество побед', fontsize=12)
         plt.title('Топ-20 тренеров по количеству побед', fontsize=14)
-        plt.xticks(rotation=45, ha='right', fontsize=10)  # Поворачиваем и смещаем подписи оси x
+        # Поворачиваем и смещаем подписи оси x
+        plt.xticks(rotation=45, ha='right', fontsize=10)
         plt.yticks(fontsize=10)
         plt.tight_layout()
         plt.savefig('top_20_coaches_wins_bar plot.png')
         plt.show()
 
         # для категоризированной диаграммы "box-and-whiskers"
-        quant_quail_data_box = matches_normalized[['home_club_goals', 'competition_id']]
-        colors = sns.color_palette('Purples', n_colors=29)[::-1]  # Выбор 29 цветов из палитры Purples
+        quant_quail_data_box = matches_normalized[[
+            'home_club_goals', 'competition_id']]
+        colors = sns.color_palette('Purples', n_colors=29)[
+            ::-1]  # Выбор 29 цветов из палитры Purples
 
         # категоризированная диаграмма "box-and-whiskers"
         plt.figure(figsize=(12, 8))
@@ -248,7 +268,8 @@ def generate_graphical_reports():
         plt.savefig('categorized_boxplot.png')
         plt.show()
 
-        quant_quant_quail_data = matches_normalized[['home_club_goals', 'away_club_goals', 'competition_id']]
+        quant_quant_quail_data = matches_normalized[[
+            'home_club_goals', 'away_club_goals', 'competition_id']]
 
         # категоризированная диаграмма рассеивания
         plt.figure(figsize=(12, 8))
@@ -277,7 +298,8 @@ def generate_graphical_reports():
         # рассчитаем позиции клубов на основе количества побед
         home_club_wins = (matches_normalized.groupby('home_club_id')['home_club_goals'].
                           count().reset_index(name='wins'))
-        home_club_wins['club_position'] = home_club_wins['wins'].rank(ascending=False, method='min')
+        home_club_wins['club_position'] = home_club_wins['wins'].rank(
+            ascending=False, method='min')
 
         # Объединим информацию о позициях клубов с данными о матчах
         matches_with_positions = matches_normalized.merge(home_club_wins[['home_club_id', 'club_position']],
@@ -289,7 +311,8 @@ def generate_graphical_reports():
                         palette='viridis', s=100)
         plt.xlabel('Позиция клуба', fontsize=13)
         plt.ylabel('Голы домашней команды', fontsize=13)
-        plt.title('Зависимость голов домашней команды от позиции клуба', fontsize=15)
+        plt.title(
+            'Зависимость голов домашней команды от позиции клуба', fontsize=15)
         plt.xticks(fontsize=10)
         plt.yticks(fontsize=10)
         plt.tight_layout()
@@ -297,8 +320,10 @@ def generate_graphical_reports():
         plt.show()
 
         # Рассчитаем позиции клубов на основе количества побед
-        away_club_wins = matches_normalized.groupby('away_club_id')['away_club_goals'].count().reset_index(name='wins')
-        away_club_wins['club_position'] = away_club_wins['wins'].rank(ascending=False, method='min')
+        away_club_wins = matches_normalized.groupby(
+            'away_club_id')['away_club_goals'].count().reset_index(name='wins')
+        away_club_wins['club_position'] = away_club_wins['wins'].rank(
+            ascending=False, method='min')
 
         # Объединим информацию о позициях клубов с данными о матчах
         matches_with_positions_away = matches_normalized.merge(away_club_wins[['away_club_id', 'club_position']],
@@ -310,7 +335,8 @@ def generate_graphical_reports():
                         palette='viridis', s=100)
         plt.xlabel('Позиция в таблице', fontsize=13)
         plt.ylabel('Голы гостевой команды', fontsize=13)
-        plt.title('Зависимость количества голов гостевой команды от позиции в таблице', fontsize=15)
+        plt.title(
+            'Зависимость количества голов гостевой команды от позиции в таблице', fontsize=15)
         plt.xticks(fontsize=10)
         plt.yticks(fontsize=10)
         plt.tight_layout()
@@ -321,13 +347,15 @@ def generate_graphical_reports():
         formation_wins = matches_normalized.merge(clubs_normalized[['club_id', 'club_formation']],
                                                   left_on='home_club_id',
                                                   right_on='club_id')
-        formation_wins = formation_wins.groupby('club_formation').size().reset_index(name='wins')
+        formation_wins = formation_wins.groupby(
+            'club_formation').size().reset_index(name='wins')
         formation_wins = formation_wins.sort_values(by='wins', ascending=False)
 
         # выберем топ-10 расстановок по победам
         top_10_formations = formation_wins.head(10)
 
-        colors = sns.color_palette('Purples', n_colors=10)[::-1]  # Выбор 10 цветов из палитры Purples
+        colors = sns.color_palette('Purples', n_colors=10)[
+            ::-1]  # Выбор 10 цветов из палитры Purples
 
         # топ-10 расстановок по победам
         plt.figure(figsize=(12, 8))
@@ -348,7 +376,8 @@ def generate_graphical_reports():
                         palette='viridis', s=100)
         plt.xlabel('Голы домашней команды', fontsize=13)
         plt.ylabel('Голы гостевой команды', fontsize=13)
-        plt.title('Зависимость количества голов домашней команды от голов гостевой команды', fontsize=15)
+        plt.title(
+            'Зависимость количества голов домашней команды от голов гостевой команды', fontsize=15)
         plt.xticks(fontsize=10)
         plt.yticks(fontsize=10)
         plt.tight_layout()

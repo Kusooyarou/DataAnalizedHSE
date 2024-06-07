@@ -1,3 +1,9 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Sun May 15 20:04:57 2024
+
+@author: Сорокин Г.
+"""
 import tkinter as tk
 import graph_reports
 
@@ -41,4 +47,5 @@ def open_view_graphs_window():
     ]
 
     for text, command in buttons:
-        tk.Button(clubs_window, text=text, command=command, **button_config).pack(pady=10)
+        tk.Button(clubs_window, text=text, command=command,
+                  **button_config).pack(pady=10)

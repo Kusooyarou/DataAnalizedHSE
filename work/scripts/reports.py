@@ -31,7 +31,8 @@ def open_reports():
     except FileNotFoundError:
         messagebox.showerror("Ошибка", "Файл отчетов не найден.")
     except Exception as e:
-        messagebox.showerror("Ошибка", f"Произошла ошибка при открытии файла отчетов: {e}")
+        messagebox.showerror(
+            "Ошибка", f"Произошла ошибка при открытии файла отчетов: {e}")
 
 
 def generate_reports():

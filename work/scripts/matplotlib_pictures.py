@@ -23,10 +23,13 @@ def load_and_process_data():
         pandas.DataFrame: DataFrame с данными о менеджерах клубов.
     """
     base_dir = os.path.abspath(os.path.dirname(__file__))
-    data_file_path = os.path.join(base_dir, "..", "data", "new_normalized_data.xlsx")
+    data_file_path = os.path.join(
+        base_dir, "..", "data", "new_normalized_data.xlsx")
 
-    clubs_normalized = pd.read_excel(data_file_path, sheet_name='clubs_normalized')
-    matches_normalized = pd.read_excel(data_file_path, sheet_name='matches_normalized')
+    clubs_normalized = pd.read_excel(
+        data_file_path, sheet_name='clubs_normalized')
+    matches_normalized = pd.read_excel(
+        data_file_path, sheet_name='matches_normalized')
     club_managers = pd.read_excel(data_file_path, sheet_name='club_managers')
 
     return clubs_normalized, matches_normalized, club_managers
@@ -44,13 +47,16 @@ def plot_top_30_matches_per_club(clubs_normalized, matches_normalized):
     Возвращает:
         None
     """
-    matches_count = matches_normalized.groupby('home_club_id').size().reset_index(name='matches_count')
+    matches_count = matches_normalized.groupby(
+        'home_club_id').size().reset_index(name='matches_count')
     matches_count = matches_count.merge(clubs_normalized[['club_id', 'club_name']], left_on='home_club_id',
                                         right_on='club_id')
-    top_30_matches_count = matches_count.sort_values(by='matches_count', ascending=False).head(204)
+    top_30_matches_count = matches_count.sort_values(
+        by='matches_count', ascending=False).head(204)
 
     plt.figure(figsize=(12, 8))
-    plt.bar(top_30_matches_count['club_name'], top_30_matches_count['matches_count'], color='purple')
+    plt.bar(top_30_matches_count['club_name'],
+            top_30_matches_count['matches_count'], color='purple')
     plt.xlabel('Название клуба', fontsize=12)
     plt.ylabel('Количество матчей', fontsize=12)
     plt.title('Топ-30 команд по количеству матчей', fontsize=14)
@@ -71,11 +77,14 @@ def plot_top_20_coaches_wins(matches_normalized):
     Возвращает:
         None
     """
-    coach_wins = matches_normalized.groupby('home_club_manager_name').size().reset_index(name='wins')
-    top_20_coaches = coach_wins.sort_values(by='wins', ascending=False).head(20)
+    coach_wins = matches_normalized.groupby(
+        'home_club_manager_name').size().reset_index(name='wins')
+    top_20_coaches = coach_wins.sort_values(
+        by='wins', ascending=False).head(20)
 
     plt.figure(figsize=(12, 8))
-    plt.bar(top_20_coaches['home_club_manager_name'], top_20_coaches['wins'], color='purple')
+    plt.bar(top_20_coaches['home_club_manager_name'],
+            top_20_coaches['wins'], color='purple')
     plt.xlabel('Имя тренера', fontsize=12)
     plt.ylabel('Количество побед', fontsize=12)
     plt.title('Топ 20 тренеров с наибольшим количеством побед', fontsize=14)
@@ -96,7 +105,8 @@ def plot_categorized_boxplot(matches_normalized):
     Возвращает:
         None
     """
-    quant_qual_data_box = matches_normalized[['home_club_goals', 'competition_id']]
+    quant_qual_data_box = matches_normalized[[
+        'home_club_goals', 'competition_id']]
 
     plt.figure(figsize=(12, 8))
     plt.boxplot([quant_qual_data_box[quant_qual_data_box['competition_id'] == i]['home_club_goals'] for i in
@@ -120,12 +130,15 @@ def plot_categorized_scatterplot(matches_normalized):
     Возвращает:
         None
     """
-    quant_quant_qual_data = matches_normalized[['home_club_goals', 'away_club_goals', 'competition_id']]
+    quant_quant_qual_data = matches_normalized[[
+        'home_club_goals', 'away_club_goals', 'competition_id']]
 
     plt.figure(figsize=(12, 8))
     for competition_id in quant_quant_qual_data['competition_id'].unique():
-        data = quant_quant_qual_data[quant_quant_qual_data['competition_id'] == competition_id]
-        plt.scatter(data['home_club_goals'], data['away_club_goals'], label=f'Competition ID {competition_id}', s=100)
+        data = quant_quant_qual_data[quant_quant_qual_data['competition_id']
+                                     == competition_id]
+        plt.scatter(data['home_club_goals'], data['away_club_goals'],
+                    label=f'Competition ID {competition_id}', s=100)
     plt.xlabel('Голы домашнего клуба', fontsize=13)
     plt.ylabel('Голы гостевого клуба', fontsize=13)
     plt.title('Категоризированная диаграмма рассеивания', fontsize=15)
@@ -146,7 +159,8 @@ def plot_matches_per_season(matches_normalized):
     Возвращает:
         None
     """
-    matches_per_season = matches_normalized['season'].value_counts().sort_index()
+    matches_per_season = matches_normalized['season'].value_counts(
+    ).sort_index()
 
     plt.figure(figsize=(12, 8))
     plt.bar(matches_per_season.index, matches_per_season.values, color='purple')
@@ -170,8 +184,10 @@ def plot_home_goals_vs_club_position(matches_normalized):
     Возвращает:
         None
     """
-    home_club_wins = matches_normalized.groupby('home_club_id')['home_club_goals'].count().reset_index(name='wins')
-    home_club_wins['club_position'] = home_club_wins['wins'].rank(ascending=False, method='min')
+    home_club_wins = matches_normalized.groupby(
+        'home_club_id')['home_club_goals'].count().reset_index(name='wins')
+    home_club_wins['club_position'] = home_club_wins['wins'].rank(
+        ascending=False, method='min')
     matches_with_positions = matches_normalized.merge(home_club_wins[['home_club_id', 'club_position']],
                                                       left_on='home_club_id', right_on='home_club_id')
 
@@ -200,8 +216,10 @@ def plot_away_goals_vs_club_position(matches_normalized):
     Возвращает:
         None
     """
-    away_club_wins = matches_normalized.groupby('away_club_id')['away_club_goals'].count().reset_index(name='wins')
-    away_club_wins['club_position'] = away_club_wins['wins'].rank(ascending=False, method='min')
+    away_club_wins = matches_normalized.groupby(
+        'away_club_id')['away_club_goals'].count().reset_index(name='wins')
+    away_club_wins['club_position'] = away_club_wins['wins'].rank(
+        ascending=False, method='min')
     matches_with_positions_away = matches_normalized.merge(away_club_wins[['away_club_id', 'club_position']],
                                                            left_on='away_club_id', right_on='away_club_id')
     plt.figure(figsize=(12, 8))
@@ -209,7 +227,8 @@ def plot_away_goals_vs_club_position(matches_normalized):
                 c=matches_with_positions_away['season'], cmap='viridis', s=100)
     plt.xlabel('Позиция в таблице', fontsize=13)
     plt.ylabel('Голы гостевой команды', fontsize=13)
-    plt.title('Зависимость количества голов гостевой команды от позиции в таблице', fontsize=15)
+    plt.title(
+        'Зависимость количества голов гостевой команды от позиции в таблице', fontsize=15)
     plt.xticks(fontsize=10)
     plt.yticks(fontsize=10)
     plt.colorbar(label='Сезон')
@@ -233,14 +252,16 @@ def plot_top_10_formations_wins(matches_normalized, clubs_normalized):
     # Сгруппировать данные по типу формации и подсчитать количество побед для каждой формации
     formation_wins = matches_normalized.merge(clubs_normalized[['club_id', 'club_formation']], left_on='home_club_id',
                                               right_on='club_id')
-    formation_wins = formation_wins.groupby('club_formation').size().reset_index(name='wins')
+    formation_wins = formation_wins.groupby(
+        'club_formation').size().reset_index(name='wins')
     formation_wins = formation_wins.sort_values(by='wins', ascending=False)
 
     # Выбрать топ-10 расстановок по победам
     top_10_formations = formation_wins.head(10)
 
     plt.figure(figsize=(12, 8))
-    plt.bar(top_10_formations['club_formation'], top_10_formations['wins'], color='purple')
+    plt.bar(top_10_formations['club_formation'],
+            top_10_formations['wins'], color='purple')
     plt.xlabel('Тип формации клуба', fontsize=13)
     plt.ylabel('Количество побед', fontsize=13)
     plt.title('Топ-10 расстановок клубов по количеству побед', fontsize=14)
@@ -263,10 +284,12 @@ def plot_home_goals_vs_away_goals_scatterplot(matches_normalized):
         None
     """
     plt.figure(figsize=(12, 8))
-    plt.scatter(matches_normalized['home_club_goals'], matches_normalized['away_club_goals'], c='blue', alpha=0.5)
+    plt.scatter(matches_normalized['home_club_goals'],
+                matches_normalized['away_club_goals'], c='blue', alpha=0.5)
     plt.xlabel('Голы домашней команды', fontsize=13)
     plt.ylabel('Голы гостевой команды', fontsize=13)
-    plt.title('Зависимость количества голов домашней команды от голов гостевой команды', fontsize=15)
+    plt.title(
+        'Зависимость количества голов домашней команды от голов гостевой команды', fontsize=15)
     plt.xticks(fontsize=10)
     plt.yticks(fontsize=10)
     plt.tight_layout()
@@ -275,7 +298,8 @@ def plot_home_goals_vs_away_goals_scatterplot(matches_normalized):
 
 
 base_dir = os.path.abspath(os.path.dirname(__file__))
-data_file_path = os.path.join(base_dir, "..", "data", "new_normalized_data.xlsx")
+data_file_path = os.path.join(
+    base_dir, "..", "data", "new_normalized_data.xlsx")
 # Загрузка и обработка данных
 clubs_normalized, matches_normalized, club_managers = load_and_process_data()
 

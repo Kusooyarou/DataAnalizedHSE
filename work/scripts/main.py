@@ -1,9 +1,17 @@
 # -*- coding: utf-8 -*-
 """
+Spyder Editor
+
+This is a temporary script file.
+"""
+
+# -*- coding: utf-8 -*-
+"""
 Создано 15 мая 2024 года
 
 Авторы: Бабенко А, Осинцев К
 """
+
 import tkinter as tk
 from tkinter import messagebox, ttk
 import os
@@ -14,7 +22,6 @@ import filter  # Модуль для фильтрации данных
 import sheet_report  # Модуль для создания текстовых отчетов
 import club_operations  # Импорт нового модуля
 from graph_display import open_view_graphs, show_graph
-
 sys.path.append("../../work")
 
 
@@ -31,7 +38,8 @@ def open_reports():
     except FileNotFoundError:
         messagebox.showerror("Ошибка", "Файл отчетов не найден.")
     except Exception as e:
-        messagebox.showerror("Ошибка", f"Произошла ошибка при открытии файла отчетов: {e}")
+        messagebox.showerror(
+            "Ошибка", f"Произошла ошибка при открытии файла отчетов: {e}")
 
 
 def generate_reports():
@@ -89,14 +97,17 @@ class Application(tk.Tk):
 
         # Определение путей к файлам данных и отчетов относительно расположения скрипта
         base_dir = os.path.abspath(os.path.dirname(__file__))
-        self.data_file_path = os.path.join(base_dir, "..", "data", "new_normalized_data.xlsx")
+        self.data_file_path = os.path.join(
+            base_dir, "..", "data", "new_normalized_data.xlsx")
         self.report_file_path = os.path.join(base_dir, "..", "reports.xlsx")
-        self.picture1_file_path = os.path.join(base_dir, "..", "data", "picture1.png")
+        self.picture1_file_path = os.path.join(
+            base_dir, "..", "data", "picture1.png")
 
         # Загрузка данных
         try:
             self.clubs_df = load_data(self.data_file_path, "clubs_normalized")
-            self.matches_df = load_data(self.data_file_path, "matches_normalized")
+            self.matches_df = load_data(
+                self.data_file_path, "matches_normalized")
             self.managers_df = load_data(self.data_file_path, "club_managers")
         except FileNotFoundError:
             messagebox.showerror("Ошибка", "Файл данных не найден.")
@@ -149,9 +160,11 @@ class Application(tk.Tk):
         button_open_reports.grid(row=6, column=0, pady=5)
 
         self.display_frame = tk.Frame(self, bg="white")
-        self.display_frame.grid(row=0, column=1, rowspan=7, padx=10, pady=25, sticky="nsew")
+        self.display_frame.grid(
+            row=0, column=1, rowspan=7, padx=10, pady=25, sticky="nsew")
 
-        self.canvas = tk.Canvas(self.display_frame, bg="white", height=600, width=800)
+        self.canvas = tk.Canvas(
+            self.display_frame, bg="white", height=600, width=800)
         self.canvas.pack(fill="both", expand=True)
 
         try:
@@ -160,7 +173,8 @@ class Application(tk.Tk):
             self.img = ImageTk.PhotoImage(self.img)
             self.canvas.create_image(0, 0, anchor='nw', image=self.img)
         except Exception as e:
-            messagebox.showerror("Ошибка", f"Не удалось загрузить изображение: {e}")
+            messagebox.showerror(
+                "Ошибка", f"Не удалось загрузить изображение: {e}")
 
     def view_excel_table(self):
         """
@@ -179,14 +193,16 @@ class Application(tk.Tk):
         for widget in self.display_frame.winfo_children():
             widget.destroy()
 
-        tree = ttk.Treeview(self.display_frame, columns=tuple(self.clubs_df.columns), show='headings')
+        tree = ttk.Treeview(self.display_frame, columns=tuple(
+            self.clubs_df.columns), show='headings')
         for col in self.clubs_df.columns:
             tree.heading(col, text=col)
 
         for _, row in self.clubs_df.iterrows():
             tree.insert("", tk.END, values=tuple(row))
 
-        scrollbar = ttk.Scrollbar(self.display_frame, orient="vertical", command=tree.yview)
+        scrollbar = ttk.Scrollbar(
+            self.display_frame, orient="vertical", command=tree.yview)
         tree.configure(yscrollcommand=scrollbar.set)
         tree.pack(fill="both", expand=True)
         scrollbar.pack(side="right", fill="y")
@@ -194,7 +210,8 @@ class Application(tk.Tk):
         filter_frame = tk.Frame(self.display_frame, bg="white")
         filter_frame.pack(pady=10)
 
-        label_filter = tk.Label(filter_frame, text="Введите club_id:", bg="white")
+        label_filter = tk.Label(
+            filter_frame, text="Введите club_id:", bg="white")
         label_filter.grid(row=0, column=0)
 
         entry_filter = tk.Entry(filter_frame)
@@ -204,7 +221,8 @@ class Application(tk.Tk):
                                   command=lambda: filter.apply_filter(tree, entry_filter.get(), self.clubs_df))
         filter_button.grid(row=0, column=2)
 
-        reset_button = tk.Button(filter_frame, text="Сбросить фильтр", command=reset_filter)
+        reset_button = tk.Button(
+            filter_frame, text="Сбросить фильтр", command=reset_filter)
         reset_button.grid(row=0, column=3)
 
     def show_graph(self, graph_function):

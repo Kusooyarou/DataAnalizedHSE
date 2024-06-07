@@ -14,6 +14,7 @@ import graph_reports
 
 sys.path.append("../../work")
 
+
 def show_graph(display_frame, graph_function):
     """
     Отображает график, сгенерированный указанной функцией, в указанном фрейме отображения.
@@ -31,7 +32,7 @@ def show_graph(display_frame, graph_function):
 
     # Генерация графика с помощью переданной функции
     fig = graph_function()
-    
+
     canvas = tk.Canvas(graphs_frame, bg="white", height=600, width=800)
     canvas.pack(fill="both", expand=True)
 
@@ -43,7 +44,8 @@ def show_graph(display_frame, graph_function):
         img = ImageTk.PhotoImage(img)
         canvas.create_image(0, 0, anchor='nw', image=img)
     except Exception as e:
-            messagebox.showerror("Ошибка", f"Не удалось загрузить изображение: {e}")
+        messagebox.showerror(
+            "Ошибка", f"Не удалось загрузить изображение: {e}")
 
 
 def open_view_graphs(display_frame):

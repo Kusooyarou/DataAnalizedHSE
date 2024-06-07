@@ -2,7 +2,7 @@
 """
 Created on Sun May 15 20:04:57 2024
 
-@author: Бабенко А.
+@author: Бабенко А. Осинцев К.
 """
 import pandas as pd
 import os
@@ -24,7 +24,8 @@ def clean_data(data: pd.DataFrame) -> pd.DataFrame:
 
     """
     if 'home_club_manager_name' in data.columns:
-        data['home_club_manager_name'] = data['home_club_manager_name'].str.strip().str.lower()
+        data['home_club_manager_name'] = data['home_club_manager_name'].str.strip(
+        ).str.lower()
     return data
 
 
@@ -74,7 +75,8 @@ def generate_text_reports(clubs_normalized: pd.DataFrame, matches_normalized: pd
 
                 return pivot_table
             except Exception as error:
-                print(f"Произошла ошибка при создании отчета 'matches_per_club_report': {error}")
+                print(
+                    f"Произошла ошибка при создании отчета 'matches_per_club_report': {error}")
                 return pd.DataFrame()
 
         def matches_per_coach_report(matches_data: pd.DataFrame) -> pd.DataFrame:
@@ -93,10 +95,12 @@ def generate_text_reports(clubs_normalized: pd.DataFrame, matches_normalized: pd
             """
             try:
                 # Отбираем нужные столбцы и сортируем данные о матчах по тренеру
-                matches_sorted = matches_data[['home_club_manager_name', 'game_id', 'home_club_id', 'away_club_id', 'season', 'home_club_goals', 'away_club_goals']].sort_values(by='home_club_manager_name')
+                matches_sorted = matches_data[['home_club_manager_name', 'game_id', 'home_club_id', 'away_club_id',
+                                               'season', 'home_club_goals', 'away_club_goals']].sort_values(by='home_club_manager_name')
 
                 # Переименовываем столбцы для удобства
-                matches_sorted.columns = ['Тренер', 'ID матча', 'ID домашнего клуба', 'ID гостевого клуба', 'Сезон', 'Голы домашнего клуба', 'Голы гостевого клуба']
+                matches_sorted.columns = ['Тренер', 'ID матча', 'ID домашнего клуба',
+                                          'ID гостевого клуба', 'Сезон', 'Голы домашнего клуба', 'Голы гостевого клуба']
 
                 # Группируем данные по тренеру
                 grouped = matches_sorted.groupby('Тренер')
@@ -110,7 +114,8 @@ def generate_text_reports(clubs_normalized: pd.DataFrame, matches_normalized: pd
 
                 return result
             except Exception as error:
-                print(f"Произошла ошибка при создании отчета 'matches_per_coach_report': {error}")
+                print(
+                    f"Произошла ошибка при создании отчета 'matches_per_coach_report': {error}")
                 return pd.DataFrame()
 
         def average_goals_per_match_report(matches_data: pd.DataFrame) -> pd.DataFrame:
@@ -134,7 +139,8 @@ def generate_text_reports(clubs_normalized: pd.DataFrame, matches_normalized: pd
 
                 return pivot_table
             except Exception as error:
-                print(f"Произошла ошибка при создании отчета 'average_goals_per_match_report': {error}")
+                print(
+                    f"Произошла ошибка при создании отчета 'average_goals_per_match_report': {error}")
                 return pd.DataFrame()
 
         def matches_per_season_report(matches_data: pd.DataFrame) -> pd.DataFrame:
@@ -153,20 +159,26 @@ def generate_text_reports(clubs_normalized: pd.DataFrame, matches_normalized: pd
             """
             try:
                 # Группируем данные о матчах по сезону и считаем количество матчей
-                matches_per_season = matches_data.groupby('season').size().reset_index(name='matches_count')
+                matches_per_season = matches_data.groupby(
+                    'season').size().reset_index(name='matches_count')
 
                 # Строим сводную таблицу
                 pivot_table = matches_per_season.set_index('season')
 
                 return pivot_table
             except Exception as error:
-                print(f"Произошла ошибка при создании отчета 'matches_per_season_report': {error}")
+                print(
+                    f"Произошла ошибка при создании отчета 'matches_per_season_report': {error}")
                 return pd.DataFrame()
 
-        reports['Отчёт матчей по клубам'] = matches_per_club_report(matches_normalized, clubs_normalized)
-        reports['Отчёт матчей по тренерам'] = matches_per_coach_report(matches_normalized)
-        reports['Отчёт среднее по голам'] = average_goals_per_match_report(matches_normalized)
-        reports['Отчёт матчи по сезонам'] = matches_per_season_report(matches_normalized)
+        reports['Отчёт матчей по клубам'] = matches_per_club_report(
+            matches_normalized, clubs_normalized)
+        reports['Отчёт матчей по тренерам'] = matches_per_coach_report(
+            matches_normalized)
+        reports['Отчёт среднее по голам'] = average_goals_per_match_report(
+            matches_normalized)
+        reports['Отчёт матчи по сезонам'] = matches_per_season_report(
+            matches_normalized)
 
     except Exception as e:
         print(f"Произошла ошибка при генерации отчетов: {e}")
@@ -176,7 +188,8 @@ def generate_text_reports(clubs_normalized: pd.DataFrame, matches_normalized: pd
 
 def main():
     base_dir = os.path.abspath(os.path.dirname(__file__))
-    data_file_path = os.path.join(base_dir, "..", "data", "new_normalized_data.xlsx")
+    data_file_path = os.path.join(
+        base_dir, "..", "data", "new_normalized_data.xlsx")
     clubs_normalized = pd.read_excel(data_file_path,
                                      sheet_name='clubs_normalized')
     matches_normalized = pd.read_excel(data_file_path,

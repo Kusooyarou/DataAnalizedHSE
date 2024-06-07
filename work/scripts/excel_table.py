@@ -32,7 +32,8 @@ def view_excel_table(clubs_df):
     for index, row in clubs_df.iterrows():
         tree.insert("", tk.END, values=tuple(row))
 
-    scrollbar = ttk.Scrollbar(excel_window, orient="vertical", command=tree.yview)
+    scrollbar = ttk.Scrollbar(
+        excel_window, orient="vertical", command=tree.yview)
     scrollbar.pack(side="right", fill="y")
     tree.configure(yscrollcommand=scrollbar.set)
 
