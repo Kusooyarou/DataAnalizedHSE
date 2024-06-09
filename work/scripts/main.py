@@ -15,7 +15,7 @@ This is a temporary script file.
 import tkinter as tk
 from tkinter import messagebox, ttk
 import os
-import sys
+import sys, subprocess
 from PIL import Image, ImageTk
 from library import load_data  # Модуль для загрузки, сохранения и открытия файлов
 import filter  # Модуль для фильтрации данных
@@ -34,7 +34,11 @@ def open_reports():
         Exception: Если произошла ошибка при открытии файла.
     """
     try:
-        os.startfile("reports.xlsx")
+        base_dir = os.path.abspath(os.path.dirname(__file__))
+        output_dir = os.path.join(base_dir, "..", "outputs", "reports.xlsx")
+
+        opener = "open" if sys.platform == "darwin" else "xdg-open"
+        subprocess.call([opener, output_dir])
     except FileNotFoundError:
         messagebox.showerror("Ошибка", "Файл отчетов не найден.")
     except Exception as e:
