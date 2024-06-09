@@ -24,6 +24,15 @@ import club_operations  # Импорт нового модуля
 from graph_display import open_view_graphs, show_graph
 sys.path.append("../../work")
 
+try:
+    base_dir = os.path.abspath(os.path.dirname(__file__))
+    output_dir = os.path.join(base_dir, "..", "outputs")
+    
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+except OSError as error:
+    print(f"Ошибка при создании папки: {error}")
+
 
 def open_reports():
     """
