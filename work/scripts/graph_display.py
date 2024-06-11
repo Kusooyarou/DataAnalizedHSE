@@ -14,8 +14,6 @@ import graph_reports
 
 sys.path.append("../../work")
 
-base_dir = os.path.abspath(os.path.dirname(__file__))
-output_dir = os.path.join(base_dir, "..", "outputs")
 
 def show_graph(display_frame, graph_function):
     """
@@ -40,7 +38,8 @@ def show_graph(display_frame, graph_function):
 
     try:
         global img
-        img = Image.open(os.path.join(output_dir, fig))
+        base_dir = os.path.abspath(os.path.dirname(__file__))
+        img = Image.open(os.path.join(base_dir, "outputs", fig))
         img = img.resize((800, 600))
         img = ImageTk.PhotoImage(img)
         canvas.create_image(0, 0, anchor='nw', image=img)
