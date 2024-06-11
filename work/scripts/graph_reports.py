@@ -9,8 +9,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import os
 
-output_folder = 'outputs'
-os.makedirs(output_folder, exist_ok=True)
+base_dir = os.path.abspath(os.path.dirname(__file__))
+output_dir = os.path.join(base_dir, "..", "outputs")
 
 
 def view_graph_1():
@@ -50,7 +50,7 @@ def view_graph_1():
     plt.xticks(rotation=90, fontsize=10)
     plt.yticks(range(0, top_30_matches_count['matches_count'].max() + 1, 5))
     plt.tight_layout()
-    plt.savefig(os.path.join(output_folder,
+    plt.savefig(os.path.join(output_dir,
                 'top_30_matches_per_club_barplot.png'))
 
     return 'top_30_matches_per_club_barplot.png'
@@ -86,7 +86,7 @@ def view_graph_2():
     plt.title('Топ 20 тренеров с наибольшим количеством побед', fontsize=14)
     plt.xticks(rotation=90, fontsize=10)
     plt.tight_layout()
-    plt.savefig(os.path.join(output_folder,
+    plt.savefig(os.path.join(output_dir,
                 'top_20_coaches_wins_histogram_purple_gradient.png'))
 
     return 'top_20_coaches_wins_histogram_purple_gradient.png'
@@ -118,7 +118,7 @@ def view_graph_3():
     plt.ylabel('Голы домашнего клуба', fontsize=13)
     plt.title('Категоризированная диаграмма “box-and-whiskers”', fontsize=15)
     plt.tight_layout()
-    plt.savefig(os.path.join(output_folder, 'categorized_boxplot.png'))
+    plt.savefig(os.path.join(output_dir, 'categorized_boxplot.png'))
 
     return 'categorized_boxplot.png'
 
@@ -150,7 +150,7 @@ def view_graph_4():
     plt.title('Категоризированная диаграмма рассеивания', fontsize=15)
     plt.legend(title='ID соревнования', fontsize=10)
     plt.tight_layout()
-    plt.savefig(os.path.join(output_folder, 'categorized_scatterplot.png'))
+    plt.savefig(os.path.join(output_dir, 'categorized_scatterplot.png'))
 
     return 'categorized_scatterplot.png'
 
@@ -177,7 +177,7 @@ def view_graph_5():
     plt.title('Распределение количества матчей по сезонам', fontsize=14)
     plt.xticks(rotation=45, fontsize=10)
     plt.tight_layout()
-    plt.savefig(os.path.join(output_folder,
+    plt.savefig(os.path.join(output_dir,
                 'matches_per_season_histogram.png'))
 
     return 'matches_per_season_histogram.png'
@@ -214,7 +214,7 @@ def view_graph_6():
     plt.ylabel('Голы домашней команды', fontsize=13)
     plt.title('Зависимость голов домашней команды от позиции клуба', fontsize=15)
     plt.tight_layout()
-    plt.savefig(os.path.join(output_folder,
+    plt.savefig(os.path.join(output_dir,
                 'home_goals_vs_club_position_scatterplot.png'))
 
     return 'home_goals_vs_club_position_scatterplot.png'
@@ -265,7 +265,7 @@ def view_graph_7():
     plt.xticks(fontsize=10)
     plt.yticks(fontsize=10)
     plt.tight_layout()
-    plt.savefig(os.path.join(output_folder,
+    plt.savefig(os.path.join(output_dir,
                 'away_goals_vs_club_position_scatterplot.png'))
 
     return 'away_goals_vs_club_position_scatterplot.png'

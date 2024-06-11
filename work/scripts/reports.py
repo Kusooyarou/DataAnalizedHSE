@@ -23,11 +23,11 @@ def open_reports():
         Exception: Если произошла ошибка при открытии файла отчетов.
     """
     try:
-        if os.name == 'nt':
-            os.startfile("reports.xlsx")
-        elif os.name == 'posix':
-            opener = "open" if sys.platform == "darwin" else "xdg-open"
-            subprocess.call([opener, "reports.xlsx"])
+        base_dir = os.path.abspath(os.path.dirname(__file__))
+        output_dir = os.path.join(base_dir, "..", "outputs", "reports.xlsx")
+
+        opener = "open" if sys.platform == "darwin" else "xdg-open"
+        subprocess.call([opener, output_dir])
     except FileNotFoundError:
         messagebox.showerror("Ошибка", "Файл отчетов не найден.")
     except Exception as e:

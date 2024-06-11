@@ -185,6 +185,7 @@ def main():
     if not clubs_normalized.empty and not matches_normalized.empty:
         reports = generate_text_reports(clubs_normalized, matches_normalized)
 
+<<<<<<< HEAD
         output_dir = os.path.join(base_dir, "..", "outputs")
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
@@ -192,6 +193,12 @@ def main():
         output_file_path = os.path.join(output_dir, 'reports.xlsx')
 
         with pd.ExcelWriter(output_file_path, engine='openpyxl') as writer:
+=======
+        base_dir = os.path.abspath(os.path.dirname(__file__))
+        output_dir = os.path.join(base_dir, "..", "outputs", "reports.xlsx")
+
+        with pd.ExcelWriter(output_dir, engine='openpyxl') as writer:
+>>>>>>> ac1f5f514f80ee9d039d6fbc2a08f9859bcf7cc3
             for report_name, report_table in reports.items():
                 report_table.to_excel(writer, sheet_name=report_name)
 

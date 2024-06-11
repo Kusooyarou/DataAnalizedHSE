@@ -8,6 +8,7 @@ Created on Sun May 15 20:04:57 2024
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import os
 
 
 def clean_data(data: pd.DataFrame) -> pd.DataFrame:
@@ -400,7 +401,10 @@ def main():
     if not clubs_normalized.empty and not matches_normalized.empty:
         reports = generate_text_reports(clubs_normalized, matches_normalized)
 
-        with pd.ExcelWriter('reports.xlsx', engine='openpyxl') as writer:
+        base_dir = os.path.abspath(os.path.dirname(__file__))
+        output_dir = os.path.join(base_dir, "..", "outputs", "reports.xlsx")
+
+        with pd.ExcelWriter(output_dir, engine='openpyxl') as writer:
             for report_name, report_table in reports.items():
                 report_table.to_excel(writer, sheet_name=report_name)
 

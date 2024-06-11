@@ -12,9 +12,13 @@ This is a temporary script file.
 Авторы: Бабенко А, Осинцев К
 """
 import os
+<<<<<<< HEAD
 import sys
 import tkinter as tk
 from tkinter import messagebox, ttk
+=======
+import sys, subprocess
+>>>>>>> ac1f5f514f80ee9d039d6fbc2a08f9859bcf7cc3
 from PIL import Image, ImageTk
 from library import load_data  # Модуль для загрузки, сохранения и открытия файлов
 import filter  # Модуль для фильтрации данных
@@ -22,6 +26,15 @@ import sheet_report  # Модуль для создания текстовых �
 import club_operations  # Импорт нового модуля
 from graph_display import open_view_graphs, show_graph
 sys.path.append("../../work")
+
+try:
+    base_dir = os.path.abspath(os.path.dirname(__file__))
+    output_dir = os.path.join(base_dir, "..", "outputs")
+    
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+except OSError as error:
+    print(f"Ошибка при создании папки: {error}")
 
 
 def open_reports():
@@ -33,7 +46,11 @@ def open_reports():
         Exception: Если произошла ошибка при открытии файла.
     """
     try:
-        os.startfile("reports.xlsx")
+        base_dir = os.path.abspath(os.path.dirname(__file__))
+        output_dir = os.path.join(base_dir, "..", "outputs", "reports.xlsx")
+
+        opener = "open" if sys.platform == "darwin" else "xdg-open"
+        subprocess.call([opener, output_dir])
     except FileNotFoundError:
         messagebox.showerror("Ошибка", "Файл отчетов не найден.")
     except Exception as e:
