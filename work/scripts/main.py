@@ -11,11 +11,10 @@ This is a temporary script file.
 
 Авторы: Бабенко А, Осинцев К
 """
-
-import tkinter as tk
-from tkinter import messagebox, ttk
 import os
 import sys
+import tkinter as tk
+from tkinter import messagebox, ttk
 from PIL import Image, ImageTk
 from library import load_data  # Модуль для загрузки, сохранения и открытия файлов
 import filter  # Модуль для фильтрации данных

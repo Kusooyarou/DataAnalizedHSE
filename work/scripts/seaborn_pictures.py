@@ -4,8 +4,8 @@ Created on Sun May 15 20:04:57 2024
 
 @author: Бабенко А. Осинцев К.
 """
-import pandas as pd
 import os
+import pandas as pd
 
 
 def clean_data(data: pd.DataFrame) -> pd.DataFrame:
@@ -109,7 +109,7 @@ def generate_text_reports(clubs_normalized: pd.DataFrame, matches_normalized: pd
                 result = pd.DataFrame()
 
                 # Заполняем результат
-                for name, group in grouped:
+                for group in grouped:
                     result = pd.concat([result, group])
 
                 return result
